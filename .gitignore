@@ -1,0 +1,50 @@
+# ==============================================================================
+# .gitignore - Max MSP / Gen~ / RNBO DSP Ecosystem
+# ==============================================================================
+
+# OS & System Files
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+Desktop.ini
+
+# Max / MSP Temporary & Autosave files
+*.~*
+*.bak
+*.pat~
+*.maxpat~
+*.gendsp~
+*.maxhelp~
+*.maxproj~
+
+# Max Caches & Snapshots
+max-cache/
+.max-cache/
+*.maxsnap
+*.maxpresets
+
+# Build artifacts & compiled objects (Daisy / C++ / Oopsy)
+build/
+*.o
+*.obj
+*.so
+*.dylib
+*.dll
+*.mxo
+*.mxe64
+
+# Heavy Audio Samples (WAV / AIFF / FLAC)
+*.wav
+*.aif
+*.aiff
+*.flac
+*.mp3
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Work-in-progress / Redundant Experiments
+testing-and-redundancies/
