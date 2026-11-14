@@ -18,6 +18,22 @@ os.makedirs(DOCS_DIR, exist_ok=True)
 # 21 Active DSP models synchronized with normalized .maxpat and gendsp/*.gendsp files
 MODELS = [
     {
+        "id": "fm-supermod",
+        "name": "FM SuperMod",
+        "title": "Quadrature Cross-Feedback FM Engine & Live Audio Modulator",
+        "category": "processors",
+        "inlets": ["Audio L / MIDI Note In", "Audio R / Modulator CV", "FM Index CV", "Feedback CV"],
+        "outlets": ["Processed Audio L", "Processed Audio R"],
+        "summary": "High-definition Frequency & Phase Modulation processor with quadrature carrier outputs, cross-coupled feedback, anti-aliasing reconstruction filter, and 3 distinct live audio modulation modes (Ring Mod, Doppler FM Delay, Adaptive FM).",
+        "equations": [
+            r"f_m = f_c \cdot \text{ratio}",
+            r"\Delta f = f_c \cdot I_{fm} \cdot \sin(\omega_m t)",
+            r"\phi_c = \int 2\pi (f_c + \Delta f) dt",
+            r"y_{sin} = \sin(\phi_c + k_{fb} \cdot y_{cos}[n-1])",
+            r"y_{cos} = \cos(\phi_c + k_{fb} \cdot y_{sin}[n-1])"
+        ]
+    },
+    {
         "id": "aether-drift",
         "name": "Aether Drift",
         "title": "Parallel Stereo Delay & 8-Stage Cascaded Allpass Diffuser",

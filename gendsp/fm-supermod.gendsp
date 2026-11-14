@@ -1,0 +1,232 @@
+{
+    "patcher": {
+        "fileversion": 1,
+        "appversion": {
+            "major": 9,
+            "minor": 2,
+            "revision": 1,
+            "architecture": "x64",
+            "modernui": 1
+        },
+        "classnamespace": "dsp.gen",
+        "rect": [
+            264.0,
+            142.0,
+            849.0,
+            679.0
+        ],
+        "default_fontsize": 11.0,
+        "gridsize": [
+            8.0,
+            8.0
+        ],
+        "lefttoolbarpinned": 2,
+        "toptoolbarpinned": 2,
+        "righttoolbarpinned": 2,
+        "bottomtoolbarpinned": 2,
+        "toolbars_unpinned_last_save": 15,
+        "boxanimatetime": 20,
+        "subpatcher_template": "Max Audio Effect_template",
+        "boxes": [
+            {
+                "box": {
+                    "id": "obj-21",
+                    "maxclass": "newobj",
+                    "numinlets": 0,
+                    "numoutlets": 1,
+                    "outlettype": [
+                        ""
+                    ],
+                    "patching_rect": [
+                        579.0,
+                        61.0,
+                        221.0,
+                        21.0
+                    ],
+                    "text": "in 4 @comment Feedback Depth CV (-2..2)"
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-17",
+                    "maxclass": "newobj",
+                    "numinlets": 0,
+                    "numoutlets": 1,
+                    "outlettype": [
+                        ""
+                    ],
+                    "patching_rect": [
+                        391.0,
+                        38.0,
+                        273.0,
+                        21.0
+                    ],
+                    "text": "in 3 @comment FM Index CV (0..100)"
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-9",
+                    "maxclass": "newobj",
+                    "numinlets": 0,
+                    "numoutlets": 1,
+                    "outlettype": [
+                        ""
+                    ],
+                    "patching_rect": [
+                        203.0,
+                        10.0,
+                        274.0,
+                        21.0
+                    ],
+                    "text": "in 2 @comment Audio R / Ratio Mod IN"
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-1",
+                    "maxclass": "newobj",
+                    "numinlets": 0,
+                    "numoutlets": 1,
+                    "outlettype": [
+                        ""
+                    ],
+                    "patching_rect": [
+                        15.0,
+                        61.0,
+                        164.0,
+                        21.0
+                    ],
+                    "text": "in 1 @comment Audio L / Note IN"
+                }
+            },
+            {
+                "box": {
+                    "code": "/**\n * ============================================================================\n * @file fm-supermod.gendsp / fm-supermod.maxpat\n * @title FM-SUPERMOD (Quadrature Cross-Feedback FM Engine & Live Audio Modulator)\n * @author Max Bruckert\n *\n * @description\n * High-definition Frequency & Phase Modulation (FM/PM) processor featuring\n * quadrature carrier generation (sine/cosine in 90-degree phase offset),\n * non-linear cross-coupled feedback phase modulation, and an integrated\n * anti-aliasing reconstruction filter.\n *\n * Can function both as an autonomous dual-operator FM synthesizer and as a\n * versatile live audio modulation processor:\n *   - Mode 0 (Quadrature Ring Modulation):\n *     Audio inputs (L/R) are modulated by the quadrature carrier pair, creating\n *     prismatic stereo sidebands, bell tones, and metallic textures.\n *   - Mode 1 (Through-Zero Time/Doppler FM):\n *     Audio inputs (L/R) are dynamically time-modulated through a short\n *     cubic-interpolated delay buffer, producing true acoustic frequency\n *     modulation, laser flanging, and stereo tape flutter on live audio.\n *   - Mode 2 (Adaptive Carrier FM):\n *     The incoming live audio acts directly as an external phase/frequency\n *     modulator driving the internal carrier.\n *\n * @inlets\n *   in1 : Audio Left Input / Note In (0..128 when use_note_in=1)\n *   in2 : Audio Right Input / Modulator Modulation CV\n *   in3 : FM Index CV (0..100)\n *   in4 : Cross-Feedback Depth CV (-2..2)\n *\n * @outlets\n *   out1 : Processed Audio Left (Dry/Wet)\n *   out2 : Processed Audio Right (Dry/Wet)\n *\n * @parameters\n *   mode        (0..2, def: 0)         : 0: Quadrature Ring Mod, 1: Time/Doppler FM, 2: Adaptive Audio FM\n *   freq        (0.1..10000 Hz, def: 220): Base carrier frequency in Hz\n *   ratio       (0.01..30, def: 1.0)   : Modulator to carrier frequency ratio\n *   fm_index    (0..100, def: 2.0)     : Frequency modulation index / depth\n *   feedback    (-2..2, def: 0.0)      : Cross-coupled quadrature feedback amount\n *   use_note_in (0/1, def: 0)          : 1: Treat in1 as MIDI pitch, 0: Treat in1 as Audio\n *   filter_lp   (0/1, def: 1)          : Anti-aliasing 2nd-order Butterworth lowpass filter\n *   mix         (0..100 %, def: 100)   : Global Dry / Wet blend\n * ============================================================================\n */\n\n// 1. RECONSTRUCTION FILTER (2nd-Order Butterworth Lowpass, fc ~ fs/4)\nbiquad_lp(sig, x1, x2, y1, y2) {\n    y = (sig * 0.469) + (x1 * 0.938) + (x2 * 0.469) - (y1 * 0.74) - (y2 * 0.137);\n    return y, sig, x1, y, y1;\n}\n\n// 2. PARAMETERS\nParam mode(0, min=0, max=2);\nParam freq(220, min=0.1, max=10000);\nParam ratio(1.0, min=0.01, max=30);\nParam fm_index(2.0, min=0, max=100);\nParam feedback(0.0, min=-2, max=2);\nParam use_note_in(0, min=0, max=1);\nParam filter_lp(1, min=0, max=1);\nParam mix(100, min=0, max=100);\n\n// 3. MEMORIES & HISTORIES\nHistory h_phase_car(0), h_phase_mod(0);\nHistory h_sin(0), h_cos(0);\nHistory h_x1_L(0), h_x2_L(0), h_y1_L(0), h_y2_L(0);\nHistory h_x1_R(0), h_x2_R(0), h_y1_R(0), h_y2_R(0);\nDelay dly_L(4800), dly_R(4800); // For Mode 1 (Through-Zero Time FM)\n\n// 4. FREQUENCY & MODULATION SETUP\neff_note = clamp(in1, 0, 128);\nf_base = (use_note_in > 0.5) ? mtof(eff_note) : max(freq, 0.01);\nf_ratio = clamp(ratio + in2 * 0.1, 0.01, 30.0);\nf_mod = f_base * f_ratio;\n\neff_index = clamp(fm_index + in3, 0.0, 100.0);\neff_fb = clamp(feedback + in4, -2.0, 2.0);\n\n// 5. MODULATOR OSCILLATOR\nmod_inc = (f_mod * TWOPI) / samplerate;\nh_phase_mod = wrap(h_phase_mod + mod_inc, 0, TWOPI);\nmod_sin = sin(h_phase_mod);\n\n// In Mode 2 (Adaptive), external audio direct injection drives modulator\nif (mode >= 1.5) {\n    audio_env = (in1 + in2) * 0.5;\n    mod_sig = mix(mod_sin, audio_env * 2.0, 0.7);\n} else {\n    mod_sig = mod_sin;\n}\n\n// 6. CARRIER OSCILLATOR (QUADRATURE WITH CROSS-FEEDBACK)\n// Instantaneous carrier frequency with FM deviation\ndelta_f = f_base * mod_sig * eff_index;\nf_inst = max(f_base + delta_f, 0.0);\n\ncar_inc = (f_inst * TWOPI) / samplerate;\nh_phase_car = wrap(h_phase_car + car_inc, 0, TWOPI);\n\n// Cross-coupled quadrature phase modulation (Sin modulates Cos, Cos modulates Sin)\nraw_sin = sin(h_phase_car + h_cos * eff_fb);\nraw_cos = cos(h_phase_car + h_sin * eff_fb);\n\nh_sin = fixdenorm(raw_sin);\nh_cos = fixdenorm(raw_cos);\n\n// 7. ANTI-ALIASING FILTER (OPTIONAL BUT RECOMMENDED)\nif (filter_lp > 0.5) {\n    filt_sin, h_x1_L, h_x2_L, h_y1_L, h_y2_L = biquad_lp(raw_sin, h_x1_L, h_x2_L, h_y1_L, h_y2_L);\n    filt_cos, h_x1_R, h_x2_R, h_y1_R, h_y2_R = biquad_lp(raw_cos, h_x1_R, h_x2_R, h_y1_R, h_y2_R);\n} else {\n    filt_sin = raw_sin;\n    filt_cos = raw_cos;\n}\n\n// 8. AUDIO PROCESSING & MODULATION MODES\nwet_L = 0; wet_R = 0;\ndry_L = in1; dry_R = (in2 != 0) ? in2 : in1;\n\nif (mode < 0.5) {\n    // --- MODE 0 : QUADRATURE RING MODULATION ---\n    // If used as synth (in1 == 0), output raw carriers; if audio input present, ring modulate\n    has_audio = (abs(in1) > 0.0001) && (use_note_in < 0.5);\n    wet_L = has_audio ? (dry_L * filt_sin) : filt_sin;\n    wet_R = has_audio ? (dry_R * filt_cos) : filt_cos;\n\n} else if (mode < 1.5) {\n    // --- MODE 1 : THROUGH-ZERO TIME / DOPPLER FM ---\n    // Delay time dynamic modulation creates true Doppler frequency modulation on live audio\n    dly_L.write(dry_L);\n    dly_R.write(dry_R);\n    \n    center_ms = 5.0;\n    span_ms = min(4.5, (eff_index * 0.045) + 0.1);\n    \n    mod_time_L = mstosamps(center_ms + (filt_sin * span_ms));\n    mod_time_R = mstosamps(center_ms + (filt_cos * span_ms));\n    \n    wet_L = dly_L.read(mod_time_L, interp=\"cubic\");\n    wet_R = dly_R.read(mod_time_R, interp=\"cubic\");\n\n} else {\n    // --- MODE 2 : ADAPTIVE CARRIER FM ---\n    // Live audio phase/freq modulates the carrier; output is the generated acoustic texture\n    wet_L = filt_sin;\n    wet_R = filt_cos;\n}\n\n// 9. MASTER DRY / WET MIX\nmix_val = clamp(mix * 0.01, 0.0, 1.0);\nout1 = mix(dry_L, wet_L, mix_val);\nout2 = mix(dry_R, wet_R, mix_val);\n",
+                    "fontface": 0,
+                    "fontname": "<Monospaced>",
+                    "fontsize": 11.0,
+                    "id": "obj-5",
+                    "maxclass": "codebox",
+                    "numinlets": 4,
+                    "numoutlets": 2,
+                    "outlettype": [
+                        "",
+                        ""
+                    ],
+                    "patching_rect": [
+                        15.0,
+                        100.0,
+                        583.0,
+                        533.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-4",
+                    "maxclass": "newobj",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        15.0,
+                        643.0,
+                        33.0,
+                        21.0
+                    ],
+                    "text": "out 1"
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-6",
+                    "maxclass": "newobj",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        200.0,
+                        643.0,
+                        33.0,
+                        21.0
+                    ],
+                    "text": "out 2"
+                }
+            }
+        ],
+        "lines": [
+            {
+                "patchline": {
+                    "destination": [
+                        "obj-5",
+                        0
+                    ],
+                    "source": [
+                        "obj-1",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "destination": [
+                        "obj-5",
+                        2
+                    ],
+                    "source": [
+                        "obj-17",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "destination": [
+                        "obj-5",
+                        3
+                    ],
+                    "source": [
+                        "obj-21",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "destination": [
+                        "obj-4",
+                        0
+                    ],
+                    "source": [
+                        "obj-5",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "destination": [
+                        "obj-5",
+                        1
+                    ],
+                    "source": [
+                        "obj-9",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "destination": [
+                        "obj-6",
+                        0
+                    ],
+                    "source": [
+                        "obj-5",
+                        1
+                    ]
+                }
+            }
+        ],
+        "autosave": 0
+    }
+}
