@@ -365,7 +365,7 @@
                         22.0
                     ],
                     "style": "maxb_default_style",
-                    "text": "param oneshot 0"
+                    "text": "param oneshot 0 @min 0 @max 1"
                 }
             },
             {
@@ -391,7 +391,7 @@
                         22.0
                     ],
                     "style": "maxb_default_style",
-                    "text": "param shotnumbers 1"
+                    "text": "param shotnumbers 1 @min 0 @max 128"
                 }
             },
             {
@@ -477,7 +477,7 @@
                         22.0
                     ],
                     "style": "maxb_default_style",
-                    "text": "param expc 1"
+                    "text": "param expc 1 @min 0 @max 8"
                 }
             },
             {
@@ -503,7 +503,7 @@
                         22.0
                     ],
                     "style": "maxb_default_style",
-                    "text": "param exp1 1"
+                    "text": "param exp1 1 @min 0.05 @max 20"
                 }
             },
             {
