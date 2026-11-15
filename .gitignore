@@ -40,6 +40,8 @@ build/
 *.aiff
 *.flac
 *.mp3
+!soundfiles/
+!soundfiles/*.wav
 
 # Python cache
 __pycache__/

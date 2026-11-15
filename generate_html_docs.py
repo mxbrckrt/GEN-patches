@@ -1396,6 +1396,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     <header>
         <div class="header-top">
             <span class="sys-badge">Max MSP &bull; GenExpr &bull; 64-Bit DSP</span>
+            <a href="https://sletz.github.io/faust-gen-patches/web/" target="_blank" class="sys-badge" style="text-decoration:none; border-color: rgba(249, 115, 22, 0.4); color: #fb923c; background: rgba(249, 115, 22, 0.08);">⚡ Faust / WASM Live Playground &rarr;</a>
             <span class="meta-author">Max Bruckert &bull; 2026</span>
         </div>
         <h1>GEN~ Audio DSP Library</h1>
