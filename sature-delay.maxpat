@@ -11,7 +11,7 @@
         "classnamespace": "box",
         "openrect": [ 50.0, 50.0, 600.0, 600.0 ],
         "openrectmode": 0,
-        "toolbars_unpinned_last_save": 7,
+        "toolbars_unpinned_last_save": 2,
         "subpatcher_template": "maxb-default-template",
         "boxes": [
             {
@@ -80,7 +80,7 @@
                     "numinlets": 1,
                     "numoutlets": 0,
                     "patching_rect": [ 32.0, 16.0, 277.0, 47.0 ],
-                    "text": "SATURE DELAY",
+                    "text": "Sature Delay",
                     "textcolor": [ 1.0, 1.0, 1.0, 1.0 ]
                 }
             },

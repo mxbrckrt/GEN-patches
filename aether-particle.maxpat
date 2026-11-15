@@ -371,7 +371,7 @@
                     "maxclass": "comment",
                     "numinlets": 1,
                     "numoutlets": 0,
-                    "patching_rect": [ 9.0, 54.0, 331.0, 27.0 ],
+                    "patching_rect": [ 12.0, 68.0, 331.0, 27.0 ],
                     "text": "granulator with a twist and a FDN reverb"
                 }
             },
@@ -382,8 +382,8 @@
                     "maxclass": "comment",
                     "numinlets": 1,
                     "numoutlets": 0,
-                    "patching_rect": [ 9.0, 2.0, 237.0, 47.0 ],
-                    "text": "aether particle"
+                    "patching_rect": [ 12.0, 8.0, 245.0, 47.0 ],
+                    "text": "Aether Particle"
                 }
             },
             {

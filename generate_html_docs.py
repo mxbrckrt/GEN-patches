@@ -15,21 +15,212 @@ import json
 DOCS_DIR = os.path.join(os.path.dirname(__file__), "docs")
 os.makedirs(DOCS_DIR, exist_ok=True)
 
-# 21 Active DSP models synchronized with normalized .maxpat and gendsp/*.gendsp files
+# 25 Active DSP models synchronized with normalized .maxpat and gendsp/*.gendsp files
 MODELS = [
+    {
+        "id": "driller",
+        "name": "Driller",
+        "title": "Stochastic Multi-Tap Glitch Repeat & Beat-Drill Delay",
+        "category": "delays",
+        "category_label": "Delays & Echoes",
+        "badge": "Glitch Repeat / Beat Drill",
+        "gendsp": "gendsp/driller.gendsp",
+        "maxpat": "driller.maxpat",
+        "description": "High-speed, sample-accurate GenExpr port of the RNBO 'driller' algorithm. Operates as a dynamic stutter, glitch repeater, and beat-drill delay. Uses a continuous circular recording buffer that constantly buffers incoming live audio. At each beat boundary, a stochastic lottery draws from all 6 subdivision taps (or stays locked to maindelay when probability is 0). Features 3 modes (Overlay, Insert, and Capture/Freeze), seam micro-fades to eliminate clicks, kinetic voice spatialization, adaptive anti-rumble high-pass filtering, and stochastic lo-fi degradation.",
+        "dsp_paradigm": "Continuous circular recording delay buffer + stochastic beat-synchronized subdivision lottery with raised-cosine seam micro-fades",
+        "inlets": [
+            "in1: Left audio input",
+            "in2: Right audio input",
+            "in3: Main Delay CV in ms (added to maindelay)",
+            "in4: Probability CV in % (added to probability)"
+        ],
+        "outlets": [
+            "out1: Processed Left audio (Dry/Wet)",
+            "out2: Processed Right audio (Dry/Wet)",
+            "out3: Active subdivision slot CV (0=Mute, 1=Main, 2..6=Drill Ratios)"
+        ],
+        "block_diagram": """[in1, in2] ──┬─────────────────────────────────────────────────────────────> [Mode Router]
+             │                                                                   │
+             ├──> (+) ──> [Continuous Circular Buffer (rec_L/R)]                 │
+             │     ▲                               │                             │
+             │     └────── [Feedback + Tanh] ◄─────┤                             │
+             │                                     ▼                             ▼
+   [CV Inputs] ──> [Stochastic Lottery Draw] ──> [Looping Read Head] ──> [Micro-Fade Window]
+   (in3, in4)      (p=0: Main / p>0: 6 Taps)           │
+                                                       ▼
+                                             [Dynamic Pan Spread]
+                                                       │
+                                                       ▼
+                                             [Adaptive High-Pass]
+                                                       │
+                                                       ▼
+                                             [Lo-Fi Degradation] ───────> [Dry / Wet Mix] ──> [out1, out2]""",
+        "parameters": [
+            {"name": "maindelay", "range": "10 – 4000 ms", "default": "500", "desc": "Fundamental loop/clock period"},
+            {"name": "div2", "range": "1 – 32", "default": "2", "desc": "Drill subdivision ratio 2 (main / div2)"},
+            {"name": "div3", "range": "1 – 32", "default": "4", "desc": "Drill subdivision ratio 3 (main / div3)"},
+            {"name": "div4", "range": "1 – 32", "default": "8", "desc": "Drill subdivision ratio 4 (main / div4)"},
+            {"name": "div5", "range": "1 – 32", "default": "10", "desc": "Drill subdivision ratio 5 (main / div5)"},
+            {"name": "div6", "range": "1 – 32", "default": "12", "desc": "Drill subdivision ratio 6 (main / div6)"},
+            {"name": "vol1", "range": "0 – 3", "default": "1.0", "desc": "Gain level for tap 1 (maindelay)"},
+            {"name": "vol2", "range": "0 – 3", "default": "0.8", "desc": "Gain level for tap 2 (div2)"},
+            {"name": "vol3", "range": "0 – 3", "default": "0.8", "desc": "Gain level for tap 3 (div3)"},
+            {"name": "vol4", "range": "0 – 3", "default": "0.7", "desc": "Gain level for tap 4 (div4)"},
+            {"name": "vol5", "range": "0 – 3", "default": "0.7", "desc": "Gain level for tap 5 (div5)"},
+            {"name": "vol6", "range": "0 – 3", "default": "0.65", "desc": "Gain level for tap 6 (div6)"},
+            {"name": "probability", "range": "0 – 100 %", "default": "75", "desc": "Lottery trigger chance (0 = maindelay only, >0 = draw from all 6 taps)"},
+            {"name": "mute_prob", "range": "0 – 100 %", "default": "10", "desc": "Likelihood of momentary silence/rest slot during a draw"},
+            {"name": "feedback", "range": "0 – 100 %", "default": "60", "desc": "Delay loop regeneration in overlay mode"},
+            {"name": "stereo_spread", "range": "0 – 100 %", "default": "30", "desc": "Stereo micro-offset between L and R taps (0..12 ms)"},
+            {"name": "pan_spread", "range": "0 – 100 %", "default": "50", "desc": "Dynamic voice spatialization & ricochet width"},
+            {"name": "roll_filter", "range": "0 – 100 %", "default": "50", "desc": "Adaptive highpass cutoff tracking division speed (anti-rumble)"},
+            {"name": "degrade", "range": "0 – 100 %", "default": "0", "desc": "Lo-fi degradation intensity (downsampling, bitcrush, tape drive)"},
+            {"name": "degrade_prob", "range": "0 – 100 %", "default": "30", "desc": "Stochastic probability of degradation striking a cycle"},
+            {"name": "mode", "range": "0 – 2", "default": "0", "desc": "0: Overlay (Dry+Wet), 1: Insert (Drill only), 2: Capture (Freeze)"},
+            {"name": "mix", "range": "0 – 100 %", "default": "100", "desc": "Master Dry / Wet blend ratio"}
+        ]
+    },
+    {
+        "id": "fhickup",
+        "name": "Fhickup",
+        "title": "Telephone Crossover Filter, Overdrive & Amplitude Chopper",
+        "category": "distortion",
+        "category_label": "Distortion & Saturation",
+        "badge": "Overdrive / Chopper / Filter",
+        "gendsp": "gendsp/fhickup.gendsp",
+        "maxpat": "fhickup.maxpat",
+        "description": "High-definition port of the RNBO 'fhickup' processor. Combines an analog-modeled atan overdrive with automatic loudness compensation, an asynchronous pseudo-random square-wave amplitude chopper ('hickup') with variable edge-smoothing (click to soft tremolo), and a 2nd-order telephone crossover filter with continuous LP -> BP -> HP morphing. Finished with a warm soft limiter and master dry/wet balance.",
+        "dsp_paradigm": "Atan saturation with loudness compensation + stochastic jittered amplitude chopper + 2nd-order TPT morphing SVF",
+        "inlets": [
+            "in1: Left audio input",
+            "in2: Right audio input",
+            "in3: Drive CV (added to drive parameter)",
+            "in4: Hickup Depth CV (added to hickmix parameter)"
+        ],
+        "outlets": [
+            "out1: Processed Left audio (Dry/Wet)",
+            "out2: Processed Right audio (Dry/Wet)"
+        ],
+        "block_diagram": """[in1, in2] ──┬─────────────────────────────────────────────────────────────> [Mix Matrix]
+             │                                                                   ▲
+             └──> [atan Overdrive] ──> [Loudness Comp] ──> [Amplitude Chopper]   │
+                       ▲                                         ▲               │
+                  (in3: drive)                             (in4: depth)          │
+                                                                 │               │
+                                                                 ▼               │
+                                                        [DC Blocking Filter]     │
+                                                                 │               │
+                                                                 ▼               │
+                                                        [Morphing TPT SVF]       │
+                                                        (LP -> BP -> HP)         │
+                                                                 │               │
+                                                                 ▼               │
+                                                        [Tanh Soft Limiter] ─────┘""",
+        "parameters": [
+            {"name": "drive", "range": "0 – 100 %", "default": "15", "desc": "Overdrive gain and saturation depth"},
+            {"name": "freq", "range": "50 – 8000 Hz", "default": "1200", "desc": "Crossover / telephone filter center cutoff"},
+            {"name": "filter_morph", "range": "0 – 100 %", "default": "50", "desc": "Filter mode: 0=Lowpass, 50=Telephone BP, 100=Highpass"},
+            {"name": "hickfreq", "range": "0.1 – 60 Hz", "default": "8", "desc": "Hickup chopping frequency in Hz"},
+            {"name": "hickclick", "range": "0.5 – 100 ms", "default": "15", "desc": "Edge transition smoothing (low = brutal click, high = tremolo)"},
+            {"name": "hickmix", "range": "0 – 100 %", "default": "60", "desc": "Hickup amplitude gate intensity"},
+            {"name": "stereo_spread", "range": "0 – 100 %", "default": "40", "desc": "Stereo phase divergence between L and R choppers"},
+            {"name": "mix", "range": "0 – 100 %", "default": "100", "desc": "Global Dry / Wet blend ratio"}
+        ]
+    },
+    {
+        "id": "grainer",
+        "name": "Grainer",
+        "title": "Envelope-Follower Dynamic Grain Burst Generator",
+        "category": "granular",
+        "category_label": "Granular & Microsound",
+        "badge": "Dynamic Envelope Grainer",
+        "gendsp": "gendsp/grainer.gendsp",
+        "maxpat": "grainer.maxpat",
+        "description": "Sample-accurate GenExpr port of the RNBO 'grainer' processor. Automatically segments incoming audio into crisp microsound grains modulated by an attack-tracking envelope follower. Features a fast Schmitt-trigger transient detector with input sensitivity calibration, rectangular grain windows with ultra-fast raised-cosine micro-fades (1.5 ms) preserving 100% of the sharp transient attack, automatic pre-delay alignment, sample-accurate retrigger lockout (antibis), and Bernoulli stochastic gating.",
+        "dsp_paradigm": "Dual-rate envelope follower + Schmitt trigger + Bernoulli gate + pre-delayed rectangular micro-fade windowing",
+        "inlets": [
+            "in1: Left audio input",
+            "in2: Right audio input",
+            "in3: Threshold CV (added to thresh parameter)",
+            "in4: Probability CV (added to proba parameter)"
+        ],
+        "outlets": [
+            "out1: Processed Left audio (Dry/Wet)",
+            "out2: Processed Right audio (Dry/Wet)",
+            "out3: Envelope Follower CV (0..1)",
+            "out4: Grain Trigger Impulse (0 or 1)"
+        ],
+        "block_diagram": """[in1, in2] ──┬──> [Pre-Delay Buffer] ────────────────────────────────────────┐
+             │    (aligned to fade duration)                                 │
+             │                                                               ▼
+             └──> [Envelope Follower] (scaled by gain)                  [Grain Window Multiplier]
+                       │                                                (Flat sustain + 1.5ms fade)
+                       ▼                                                             │
+                  [Schmitt Trigger & Antibis Lockout]                                │
+                       │                                                             │
+                       ▼                                                             ▼
+                  [Bernoulli Chance Gate] ──> [Grain Trigger] ───────────> [Dry / Wet Mix]
+                       │                           │                                 │
+                       ▼                           ▼                                 ▼
+                 (out3: Env CV)              (out4: Trig)                    [out1, out2]""",
+        "parameters": [
+            {"name": "gain", "range": "1 – 10", "default": "4", "desc": "Input sensitivity for envelope tracking (does not affect audio volume)"},
+            {"name": "thresh", "range": "0 – 100 %", "default": "40", "desc": "Transient detection threshold level"},
+            {"name": "slide_attack", "range": "0 – 500 ms", "default": "5", "desc": "Envelope follower rise time in ms"},
+            {"name": "slide_decay", "range": "0 – 5000 ms", "default": "50", "desc": "Envelope follower fall time in ms"},
+            {"name": "grain", "range": "6 – 20000 ms", "default": "250", "desc": "Grain window duration in ms"},
+            {"name": "antibis", "range": "0 – 10000 ms", "default": "150", "desc": "Retrigger lockout cooldown in ms"},
+            {"name": "proba", "range": "0 – 100 %", "default": "100", "desc": "Probability of grain trigger passing"},
+            {"name": "fade", "range": "0.5 – 20 ms", "default": "1.5", "desc": "Micro-fade ramp time (anti-click protection)"},
+            {"name": "mix", "range": "0 – 100 %", "default": "100", "desc": "Global Dry / Grain blend ratio"}
+        ]
+    },
     {
         "id": "fm-supermod",
         "name": "FM SuperMod",
-        "title": "Quadrature Cross-Feedback FM Engine & Live Audio Modulator",
-        "category": "processors",
-        "inlets": ["Audio L / MIDI Note In", "Audio R / Modulator CV", "FM Index CV", "Feedback CV"],
-        "outlets": ["Processed Audio L", "Processed Audio R"],
-        "summary": "High-definition Frequency & Phase Modulation processor with quadrature carrier outputs, cross-coupled feedback, anti-aliasing reconstruction filter, and 3 distinct live audio modulation modes (Ring Mod, Doppler FM Delay, Adaptive FM).",
-        "equations": [
-            r"m[n] = \sin(\phi_m + \beta \cdot m[n-1])",
-            r"y_L[n] = \sin(\phi_{cL} + I \cdot m_L[n])",
-            r"y_R[n] = \sin(\phi_{cR} + \Delta\theta + I \cdot m_R[n])",
-            r"y_{sat} = \tanh((y + 0.08 y^2) \cdot 1.25) \cdot 0.95"
+        "title": "Stereo Bell Phase Modulation & Audio Effects Processor",
+        "category": "modulation",
+        "category_label": "Modulation & Synthesis",
+        "badge": "Phase Modulation / Ring Mod",
+        "gendsp": "gendsp/fm-supermod.gendsp",
+        "maxpat": "fm-supermod.maxpat",
+        "description": "High-definition Stereo Phase Modulation (PM / Chowning FM) engine inspired by classic Yamaha DX and Buchla 259 architectures. Operates by default with crystal-clear, glassy bell timbres and self-modulating feedback (Self-FM). As Index, Ratio, and Feedback are increased, the spectrum smoothly morphs from pure sine and singing bells to brassy gongs, harmonic grit, and dense noise. Features 4 operational modes: Off/Mute (mode 0), Stereo Ring Modulation with +3.5 dB compensation and automatic -8 dB pure synthesis calibration (mode 1), Through-Zero Time/Doppler micro-delay FM (mode 2), and Adaptive Audio Phase Modulation (mode 3).",
+        "dsp_paradigm": "Classical Chowning PM with DX7 Self-FM, quadrature stereo spread, warm tube soft-clipping, and live audio processing (Ring Mod, Doppler FM, Adaptive Audio FM)",
+        "inlets": [
+            "in1: Left audio input (or MIDI Note pitch when use_note_in=1)",
+            "in2: Right audio input (or Modulator Ratio CV)",
+            "in3: FM Index CV (added to fm_index parameter)",
+            "in4: Feedback CV (added to feedback parameter)"
+        ],
+        "outlets": [
+            "out1: Processed Left audio (Dry/Wet)",
+            "out2: Processed Right audio (Dry/Wet)"
+        ],
+        "block_diagram": """[in1, in2] ──┬──> [Audio Presence Detector] ─────────────────────────────────────────┐
+             │                                                                        │
+             ├──> [Ratio & Index CV] ──> [Self-FM Modulator OSC] (sin(φm + β·m[n-1]))  │
+             │                                   │                                    │
+             │                                   ▼ (eff_index)                        ▼
+             ├──> [Stereo Carrier OSC] ◄── [Phase Modulation] ──> [Biquad LP] ──> [Mode Router]
+             │    (sin(φc + Δθ + I·m[n]))                                         │ (0: Mute)
+             │                                                                    │ (1: Ring Mod)
+             ├──> [Through-Zero Micro-Delay Line] ◄── (Doppler Time FM) ──────────┤ (2: Doppler FM)
+             │                                                                    │ (3: Adaptive FM)
+             ▼                                                                    ▼
+      [Dry Signal] ─────────────────────────────────────────────────────────> [Asymmetric Tube Sat]
+                                                                                  │
+                                                                                  ▼
+                                                                           [Dry / Wet Mix] ──> [out1, out2]""",
+        "parameters": [
+            {"name": "mode", "range": "0 – 3", "default": "1", "desc": "Operating mode: 0: Off/Mute, 1: Ring Mod, 2: Doppler FM, 3: Adaptive FM"},
+            {"name": "freq", "range": "20 – 10000 Hz", "default": "220", "desc": "Base carrier frequency in Hz (bypassed if use_note_in=1)"},
+            {"name": "ratio", "range": "0.01 – 30", "default": "1.414", "desc": "Modulator/Carrier frequency ratio (1.414 = bell, 1.0 = octave, integers = harmonic)"},
+            {"name": "fm_index", "range": "0 – 50", "default": "1.8", "desc": "Phase modulation index / depth of bell partials"},
+            {"name": "feedback", "range": "0 – 2.0", "default": "0.25", "desc": "Modulator Self-FM feedback (0 = pure sine, 0.5 = saw, >1 = metallic grit & chaos)"},
+            {"name": "stereo_spread", "range": "0 – 100 %", "default": "50", "desc": "Stereo detune width and quadrature spatial phase offset"},
+            {"name": "use_note_in", "range": "0 / 1", "default": "0", "desc": "1: in1 sets MIDI note pitch (mtof); 0: in1 is live audio"},
+            {"name": "filter_lp", "range": "0 / 1", "default": "0", "desc": "Optional 2nd-order reconstruction/anti-aliasing lowpass filter"},
+            {"name": "mix", "range": "0 – 100 %", "default": "100", "desc": "Global Dry / Wet blend ratio"}
         ]
     },
     {
@@ -1209,17 +1400,17 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         </div>
         <h1>GEN~ Audio DSP Library</h1>
         <p class="header-desc">
-            A peer-reference catalog of 21 discrete algorithms in GenExpr: physical waveguide formulations,
+            A peer-reference catalog of 25 discrete algorithms in GenExpr: physical waveguide formulations,
             zero-delay feedback (ZDF) filters, feedback delay networks, non-linear magnetic hysteresis,
             strange attractors, and granular microsound synthesis.
         </p>
         <div class="metrics-strip">
             <div class="metric-unit">
-                <span class="metric-val">21</span>
+                <span class="metric-val">25</span>
                 <span class="metric-lbl">Validated Models</span>
             </div>
             <div class="metric-unit">
-                <span class="metric-val">25</span>
+                <span class="metric-val">29</span>
                 <span class="metric-lbl">Standalone .gendsp</span>
             </div>
             <div class="metric-unit">
@@ -1242,7 +1433,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                 <input type="text" id="searchInput" class="search-field" placeholder="Filter models by identifier, transfer function, architecture, parameter name...">
             </div>
             <div class="category-row">
-                <button class="cat-btn active" data-category="all">All Models (21)</button>
+                <button class="cat-btn active" data-category="all">All Models (25)</button>
                 <button class="cat-btn" data-category="physical">Physical Modeling</button>
                 <button class="cat-btn" data-category="reverbs">Spatial & Reverbs</button>
                 <button class="cat-btn" data-category="delays">Delays & Echoes</button>
@@ -1256,7 +1447,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     </div>
 
     <main>
-        <div class="alpha-legend" id="resultsCount">Displaying 21 models sorted alphabetically</div>
+        <div class="alpha-legend" id="resultsCount">Displaying 25 models sorted alphabetically</div>
         <div class="catalog-grid" id="modelsGrid"></div>
     </main>
 

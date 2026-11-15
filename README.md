@@ -3,9 +3,9 @@
 [![MaxMSP](https://img.shields.io/badge/Max%2FMSP-8%20%7C%209-blue.svg)](https://cycling74.com)
 [![Gen~](https://img.shields.io/badge/Gen~-64--bit%20Double%20Precision-38bdf8.svg)](https://cycling74.com)
 [![Embedded](https://img.shields.io/badge/Embedded-Daisy%20%2F%20Oopsy%20Ready-64748b.svg)](https://electro-smith.com)
-[![Catalog](https://img.shields.io/badge/Validated%20Models-21%20Algorithms-0ea5e9.svg)]()
+[![Catalog](https://img.shields.io/badge/Validated%20Models-25%20Algorithms-0ea5e9.svg)]()
 
-A peer-reference suite of **21 discrete audio DSP algorithms** implemented in Cycling '74 MaxMSP `gen~` (GenExpr), covering physical waveguide modeling, zero-delay feedback (ZDF) analog filter topologies, unitary feedback delay networks (FDN), non-linear magnetic hysteresis, strange attractors, and granular microsound synthesis.
+A peer-reference suite of **25 discrete audio DSP algorithms** implemented in Cycling '74 MaxMSP `gen~` (GenExpr), covering physical waveguide modeling, zero-delay feedback (ZDF) analog filter topologies, unitary feedback delay networks (FDN), non-linear magnetic hysteresis, strange attractors, and granular microsound synthesis.
 
 All algorithms follow a normalized 1-to-1 naming convention (`<model>.maxpat` and `gendsp/<model>.gendsp`) and are ready for direct instantiation via `[gen~ @gen <model>]` (with `GEN-patches` in Max's Search Path), integration into `mc.gen~`, C++ export, or deployment to embedded hardware (**Electro-Smith Daisy / Oopsy**).
 
@@ -33,15 +33,19 @@ GEN-patches/
 ├── generate_html_docs.py           # Generator for the scientific HTML reference
 ├── docs/
 │   └── index.html                  # Alphabetical scientific documentation catalog
-├── gendsp/                         # 25 standalone modular .gendsp definitions (21 models + 4 utilities/cores)
+├── gendsp/                         # 29 standalone modular .gendsp definitions (25 models + 4 utilities/cores)
 │   ├── aether-drift.gendsp
 │   ├── aether-particle.gendsp
 │   ├── bernoulli-gate.gendsp
 │   ├── cswitch-tremolo.gendsp
 │   ├── curvature-shaper.gendsp
 │   ├── delays-delays.gendsp
+│   ├── driller.gendsp
 │   ├── erbeverb-clone.gendsp
+│   ├── fhickup.gendsp
+│   ├── fm-supermod.gendsp
 │   ├── frost-machine.gendsp
+│   ├── grainer.gendsp
 │   ├── householder-fdn-16.gendsp
 │   ├── hp_butterworth.gendsp       # Utility: 24dB/oct 4th-order Butterworth HPF
 │   ├── lorenz-rossler-chaos.gendsp
@@ -65,8 +69,12 @@ GEN-patches/
 ├── cswitch-tremolo.maxpat          # Granular Chopper & Trapezoidal LFO
 ├── curvature-shaper.maxpat         # Non-Linear Curve Transfer Function
 ├── delays-delays.maxpat            # 32-Tap Delay & 16-Channel Spatializer
+├── driller.maxpat                  # Stochastic Multi-Tap Glitch Repeat & Beat-Drill Delay
 ├── erbeverb-clone.maxpat           # Unitary 4x4 Hadamard FDN Reverb
+├── fhickup.maxpat                  # Telephone Crossover Filter, Overdrive & Amplitude Chopper
+├── fm-supermod.maxpat              # Stereo Bell Phase Modulation & Live Audio Processor
 ├── frost-machine.maxpat            # Reverb, Pre-Diffusers, Fuzz & Ducking
+├── grainer.maxpat                  # Envelope-Follower Dynamic Grain Burst Generator
 ├── householder-fdn-16.maxpat       # 16x16 Householder Matrix Spatial Reverb
 ├── lorenz-rossler-chaos.maxpat     # RK4 Lorenz & Rössler Strange Attractors
 ├── offset-spline-random.maxpat     # 6-Point Hermite Spline Random Walk
@@ -96,8 +104,12 @@ GEN-patches/
 | **CSwitch Tremolo** | Modulation | [`cswitch-tremolo.gendsp`](gendsp/cswitch-tremolo.gendsp) | [`cswitch-tremolo.maxpat`](cswitch-tremolo.maxpat) | 2 In / 4 Out | Anti-lock phase accumulator (down to 0.01 Hz) + trapezoidal envelope + S&H 2-pole BPF |
 | **Curvature Shaper** | Modulation | [`curvature-shaper.gendsp`](gendsp/curvature-shaper.gendsp) | [`curvature-shaper.maxpat`](curvature-shaper.maxpat) | 2 In / 2 Out | Symmetric S-curve & exact functional inverse interpolator ($p = 2^{\text{shape}\cdot k}$) |
 | **Delays Delays** | Delays | [`delays-delays.gendsp`](gendsp/delays-delays.gendsp) | [`delays-delays.maxpat`](delays-delays.maxpat) | 2 In / 20 Out | 32-tap delay line + 16 spatial taps + ladder spectral filter + sidechain ducking |
+| **Driller** | Delays | [`driller.gendsp`](gendsp/driller.gendsp) | [`driller.maxpat`](driller.maxpat) | 4 In / 3 Out | Dynamic stutter, glitch repeater, continuous circular buffer & beat subdivision lottery |
 | **Erbeverb Clone** | Spatial & Reverbs | [`erbeverb-clone.gendsp`](gendsp/erbeverb-clone.gendsp) | [`erbeverb-clone.maxpat`](erbeverb-clone.maxpat) | 2 In / 2 Out | Unitary 4x4 Hadamard feedback matrix + prime delay lengths + tanh soft limiting |
+| **Fhickup** | Distortion | [`fhickup.gendsp`](gendsp/fhickup.gendsp) | [`fhickup.maxpat`](fhickup.maxpat) | 4 In / 2 Out | Overdrive with loudness comp + stochastic amplitude chopper + morphing telephone SVF |
+| **FM Supermod** | Modulation | [`fm-supermod.gendsp`](gendsp/fm-supermod.gendsp) | [`fm-supermod.maxpat`](fm-supermod.maxpat) | 4 In / 2 Out | Chowning PM with DX7 Self-FM, quadrature stereo spread, warm tube soft-clipping & 3 live audio modes (Ring Mod, Doppler FM, Adaptive Audio FM) |
 | **Frost Machine** | Granular | [`frost-machine.gendsp`](gendsp/frost-machine.gendsp) | [`frost-machine.maxpat`](frost-machine.maxpat) | 2 In / 2 Out | 4 allpass pre-diffusers + cross-coupled chorus tank + post-fuzz + sidechain pump |
+| **Grainer** | Granular | [`grainer.gendsp`](gendsp/grainer.gendsp) | [`grainer.maxpat`](grainer.maxpat) | 4 In / 4 Out | Envelope follower transient detector + rectangular grain micro-fade window + Bernoulli gate |
 | **Householder FDN 16** | Spatial & Reverbs | [`householder-fdn-16.gendsp`](gendsp/householder-fdn-16.gendsp) | [`householder-fdn-16.maxpat`](householder-fdn-16.maxpat) | 2 In / 2 Out | 16-delay FDN with $O(N)$ Householder reflection matrix $H = I - \frac{2}{N}\mathbf{1}\mathbf{1}^T$ |
 | **Lorenz-Rössler Chaos** | Modulation | [`lorenz-rossler-chaos.gendsp`](gendsp/lorenz-rossler-chaos.gendsp) | [`lorenz-rossler-chaos.maxpat`](lorenz-rossler-chaos.maxpat) | 2 In / 4 Out | 4th-Order Runge-Kutta (RK4) numerical integration of 3D non-linear ODE attractors |
 | **Offset Spline Random** | Stochastic | [`offset-spline-random.gendsp`](gendsp/offset-spline-random.gendsp) | [`offset-spline-random.maxpat`](offset-spline-random.maxpat) | 2 In / 4 Out | Bounded random walk + 6-point FIFO shift register + cubic Hermite spline interpolation |

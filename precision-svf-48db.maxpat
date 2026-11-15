@@ -81,8 +81,8 @@
                     "maxclass": "comment",
                     "numinlets": 1,
                     "numoutlets": 0,
-                    "patching_rect": [ 33.0, 23.0, 209.0, 47.0 ],
-                    "text": "precision svf"
+                    "patching_rect": [ 33.0, 23.0, 237.0, 47.0 ],
+                    "text": "Precision SVF"
                 }
             },
             {

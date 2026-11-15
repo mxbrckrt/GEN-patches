@@ -115,8 +115,8 @@
                     "maxclass": "comment",
                     "numinlets": 1,
                     "numoutlets": 0,
-                    "patching_rect": [ 30.0, 9.0, 324.0, 47.0 ],
-                    "text": "TAPE HYSTERISIS",
+                    "patching_rect": [ 30.0, 9.0, 253.0, 47.0 ],
+                    "text": "Tape Hysterisis",
                     "textcolor": [ 1.0, 1.0, 1.0, 1.0 ]
                 }
             },

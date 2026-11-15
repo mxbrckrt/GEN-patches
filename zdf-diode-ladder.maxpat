@@ -199,8 +199,8 @@
                     "maxclass": "comment",
                     "numinlets": 1,
                     "numoutlets": 0,
-                    "patching_rect": [ 30.0, 20.0, 522.0, 47.0 ],
-                    "text": "ZDF TB-303 Diode Ladder Filter"
+                    "patching_rect": [ 30.0, 20.0, 443.0, 47.0 ],
+                    "text": "TB-303 Diode Ladder Filter"
                 }
             },
             {

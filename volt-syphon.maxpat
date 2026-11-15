@@ -289,8 +289,8 @@
                     "maxclass": "comment",
                     "numinlets": 1,
                     "numoutlets": 0,
-                    "patching_rect": [ 31.5, 5.0, 191.0, 47.0 ],
-                    "text": "volt syphon"
+                    "patching_rect": [ 31.5, 5.0, 201.0, 47.0 ],
+                    "text": "Volt Syphon"
                 }
             },
             {

@@ -42,8 +42,8 @@
                     "maxclass": "comment",
                     "numinlets": 1,
                     "numoutlets": 0,
-                    "patching_rect": [ 28.0, 7.0, 177.0, 47.0 ],
-                    "text": "volt drama"
+                    "patching_rect": [ 28.0, 7.0, 187.0, 47.0 ],
+                    "text": "Volt Drama"
                 }
             },
             {

@@ -19,7 +19,7 @@
                     "numinlets": 1,
                     "numoutlets": 1,
                     "outlettype": [ "" ],
-                    "patching_rect": [ 129.0, 402.0, 70.0, 22.0 ],
+                    "patching_rect": [ 208.0, 404.0, 70.0, 22.0 ],
                     "text": "loadmess 1"
                 }
             },
@@ -30,7 +30,7 @@
                     "numinlets": 1,
                     "numoutlets": 5,
                     "outlettype": [ "preset", "int", "preset", "int", "" ],
-                    "patching_rect": [ 129.0, 434.0, 100.0, 40.0 ],
+                    "patching_rect": [ 208.0, 436.0, 100.0, 40.0 ],
                     "preset_data": [
                         {
                             "number": 1,
@@ -60,7 +60,7 @@
                     "numoutlets": 1,
                     "outlettype": [ "" ],
                     "parameter_enable": 0,
-                    "patching_rect": [ 39.0, 229.0, 280.0, 22.0 ]
+                    "patching_rect": [ 118.0, 231.0, 280.0, 22.0 ]
                 }
             },
             {
@@ -72,7 +72,7 @@
                     "numoutlets": 2,
                     "outlettype": [ "", "bang" ],
                     "parameter_enable": 0,
-                    "patching_rect": [ 194.0, 289.0, 50.0, 22.0 ]
+                    "patching_rect": [ 273.0, 291.0, 50.0, 22.0 ]
                 }
             },
             {
@@ -84,7 +84,7 @@
                     "numoutlets": 1,
                     "outlettype": [ "" ],
                     "parameter_enable": 0,
-                    "patching_rect": [ 39.0, 181.0, 280.0, 22.0 ]
+                    "patching_rect": [ 118.0, 183.0, 280.0, 22.0 ]
                 }
             },
             {
@@ -96,7 +96,7 @@
                     "numoutlets": 1,
                     "outlettype": [ "" ],
                     "parameter_enable": 0,
-                    "patching_rect": [ 39.0, 157.0, 280.0, 22.0 ]
+                    "patching_rect": [ 118.0, 159.0, 280.0, 22.0 ]
                 }
             },
             {
@@ -108,7 +108,7 @@
                     "numoutlets": 1,
                     "outlettype": [ "" ],
                     "parameter_enable": 0,
-                    "patching_rect": [ 39.0, 133.0, 280.0, 22.0 ]
+                    "patching_rect": [ 118.0, 135.0, 280.0, 22.0 ]
                 }
             },
             {
@@ -120,7 +120,7 @@
                     "numoutlets": 1,
                     "outlettype": [ "" ],
                     "parameter_enable": 0,
-                    "patching_rect": [ 39.0, 109.0, 280.0, 22.0 ]
+                    "patching_rect": [ 118.0, 111.0, 280.0, 22.0 ]
                 }
             },
             {
@@ -153,7 +153,7 @@
                     "maxclass": "ezdac~",
                     "numinlets": 2,
                     "numoutlets": 0,
-                    "patching_rect": [ 39.0, 536.0, 45.0, 45.0 ]
+                    "patching_rect": [ 118.0, 538.0, 45.0, 45.0 ]
                 }
             },
             {
@@ -165,7 +165,7 @@
                     "numoutlets": 5,
                     "outlettype": [ "signal", "signal", "", "float", "list" ],
                     "parameter_enable": 1,
-                    "patching_rect": [ 39.0, 366.0, 48.0, 136.0 ],
+                    "patching_rect": [ 118.0, 368.0, 48.0, 136.0 ],
                     "relative": 1,
                     "saved_attribute_attributes": {
                         "valueof": {
@@ -190,7 +190,7 @@
                     "numinlets": 2,
                     "numoutlets": 2,
                     "outlettype": [ "signal", "signal" ],
-                    "patching_rect": [ 39.0, 321.0, 140.0, 22.0 ],
+                    "patching_rect": [ 118.0, 323.0, 140.0, 22.0 ],
                     "text": "gen~ @gen pulsar-synth"
                 }
             },
@@ -203,7 +203,7 @@
                     "numoutlets": 1,
                     "outlettype": [ "" ],
                     "parameter_enable": 0,
-                    "patching_rect": [ 39.0, 205.0, 280.0, 22.0 ]
+                    "patching_rect": [ 118.0, 207.0, 280.0, 22.0 ]
                 }
             },
             {
@@ -213,7 +213,7 @@
                     "numinlets": 2,
                     "numoutlets": 1,
                     "outlettype": [ "signal" ],
-                    "patching_rect": [ 194.0, 321.0, 66.0, 22.0 ],
+                    "patching_rect": [ 273.0, 323.0, 66.0, 22.0 ],
                     "text": "cycle~ 800"
                 }
             }

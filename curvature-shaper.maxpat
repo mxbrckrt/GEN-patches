@@ -20,8 +20,8 @@
                     "maxclass": "comment",
                     "numinlets": 1,
                     "numoutlets": 0,
-                    "patching_rect": [ 30.0, 20.0, 281.0, 47.0 ],
-                    "text": "curvature-shaper"
+                    "patching_rect": [ 30.0, 20.0, 293.0, 47.0 ],
+                    "text": "Curvature Shaper"
                 }
             },
             {
