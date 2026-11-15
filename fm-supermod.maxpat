@@ -118,9 +118,9 @@
                     "patching_rect": [ 561.6071428571428, 216.0, 111.0, 18.0 ],
                     "saved_attribute_attributes": {
                         "valueof": {
-                            "parameter_enum": [ "ring mod", "time/ doppler", "adaptive audio" ],
+                            "parameter_enum": [ "off", "ring mod", "time/ doppler", "adaptive audio" ],
                             "parameter_longname": "live.menu",
-                            "parameter_mmax": 2,
+                            "parameter_mmax": 3,
                             "parameter_modmode": 0,
                             "parameter_shortname": "live.menu",
                             "parameter_type": 2
@@ -331,10 +331,10 @@
                     "data": {
                         "clips": [
                             {
-                                "absolutepath": "FemVoice.aif",
-                                "filename": "FemVoice.aif",
+                                "absolutepath": "/Users/max/Documents/__Sooons/00-Maxmsp-sfiles-test/_Ligeti-concertos-extract.wav",
+                                "filename": "_Ligeti-concertos-extract.wav",
                                 "filekind": "audiofile",
-                                "id": "u923006814",
+                                "id": "u859009006",
                                 "loop": 1,
                                 "content_state": {
                                     "loop": 1
@@ -534,7 +534,7 @@
                     "relative": 1,
                     "saved_attribute_attributes": {
                         "valueof": {
-                            "parameter_initial": [ -20 ],
+                            "parameter_initial": [ -70.0 ],
                             "parameter_initial_enable": 1,
                             "parameter_longname": "live.gain~",
                             "parameter_mmax": 6.0,
@@ -781,7 +781,13 @@
             },
             {
                 "patchline": {
-                    "destination": [ "obj-sel-L", 1 ],
+                    "destination": [ "obj-gen", 1 ],
+                    "source": [ "obj-29", 1 ]
+                }
+            },
+            {
+                "patchline": {
+                    "destination": [ "obj-gen", 0 ],
                     "source": [ "obj-29", 0 ]
                 }
             },
@@ -898,20 +904,6 @@
                 "patchline": {
                     "destination": [ "obj-sel-L", 3 ],
                     "source": [ "obj-noise", 0 ]
-                }
-            },
-            {
-                "patchline": {
-                    "destination": [ "obj-gen", 1 ],
-                    "order": 0,
-                    "source": [ "obj-sel-L", 0 ]
-                }
-            },
-            {
-                "patchline": {
-                    "destination": [ "obj-gen", 0 ],
-                    "order": 1,
-                    "source": [ "obj-sel-L", 0 ]
                 }
             },
             {

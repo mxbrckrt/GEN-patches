@@ -26,11 +26,10 @@ MODELS = [
         "outlets": ["Processed Audio L", "Processed Audio R"],
         "summary": "High-definition Frequency & Phase Modulation processor with quadrature carrier outputs, cross-coupled feedback, anti-aliasing reconstruction filter, and 3 distinct live audio modulation modes (Ring Mod, Doppler FM Delay, Adaptive FM).",
         "equations": [
-            r"f_m = f_c \cdot \text{ratio}",
-            r"\Delta f = f_c \cdot I_{fm} \cdot \sin(\omega_m t)",
-            r"\phi_c = \int 2\pi (f_c + \Delta f) dt",
-            r"y_{sin} = \sin(\phi_c + k_{fb} \cdot y_{cos}[n-1])",
-            r"y_{cos} = \cos(\phi_c + k_{fb} \cdot y_{sin}[n-1])"
+            r"m[n] = \sin(\phi_m + \beta \cdot m[n-1])",
+            r"y_L[n] = \sin(\phi_{cL} + I \cdot m_L[n])",
+            r"y_R[n] = \sin(\phi_{cR} + \Delta\theta + I \cdot m_R[n])",
+            r"y_{sat} = \tanh((y + 0.08 y^2) \cdot 1.25) \cdot 0.95"
         ]
     },
     {
