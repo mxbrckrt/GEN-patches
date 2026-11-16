@@ -11,11 +11,7 @@
         "classnamespace": "box",
         "openrect": [ 50.0, 50.0, 800.0, 600.0 ],
         "openrectmode": 0,
-        "lefttoolbarpinned": 2,
-        "toptoolbarpinned": 2,
-        "righttoolbarpinned": 1,
-        "bottomtoolbarpinned": 1,
-        "toolbars_unpinned_last_save": 3,
+        "toolbars_unpinned_last_save": 2,
         "globalpatchername": "skipper",
         "boxes": [
             {

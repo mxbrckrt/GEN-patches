@@ -59,6 +59,8 @@ GEN-patches/
 │   ├── driller.gendsp
 │   ├── erbeverb-clone.gendsp
 │   ├── fhickup.gendsp
+│   ├── multiband-drive.gendsp
+│   ├── pisound-drive.gendsp
 │   ├── fm-supermod.gendsp
 │   ├── frost-machine.gendsp
 │   ├── grainer.gendsp
@@ -69,8 +71,10 @@ GEN-patches/
 │   ├── lp_butterworth.gendsp       # Utility: 24dB/oct 4th-order Butterworth LPF
 │   ├── offset-spline-random.gendsp
 │   ├── poisson-cloud.gendsp
+│   ├── filterbank-8.gendsp
 │   ├── precision-svf-48db.gendsp
 │   ├── pulsar-synth.gendsp
+│   ├── rings.gendsp
 │   ├── sature-delay.gendsp
 │   ├── tape-hysteresis.gendsp
 │   ├── ufo.gendsp
@@ -89,16 +93,21 @@ GEN-patches/
 ├── driller.maxpat                  # Stochastic Multi-Tap Glitch Repeat & Beat-Drill Delay
 ├── erbeverb-clone.maxpat           # Unitary 4x4 Hadamard FDN Reverb
 ├── fhickup.maxpat                  # Telephone Crossover Filter, Overdrive & Amplitude Chopper
+├── multiband-drive.maxpat          # 3-Band Linkwitz-Riley Crossover Distortion Engine
+├── pisound-drive.maxpat            # Morphing Multi-Model Distortion Engine
 ├── fm-supermod.maxpat              # Stereo Bell Phase Modulation & Live Audio Processor
 ├── frost-machine.maxpat            # Reverb, Pre-Diffusers, Fuzz & Ducking
 ├── grainer.maxpat                  # Envelope-Follower Dynamic Grain Burst Generator
 ├── skipper.maxpat                  # Stochastic CD Glitch, Variable-Speed Looper & Stutter Delay
 ├── householder-fdn-16.maxpat       # 16x16 Householder Matrix Spatial Reverb
 ├── lorenz-rossler-chaos.maxpat     # RK4 Lorenz & Rössler Strange Attractors
+├── lowpasss_highpass.maxpat       # Utility 24 dB/oct Butterworth Lowpass & Highpass
 ├── offset-spline-random.maxpat     # 6-Point Hermite Spline Random Walk
 ├── poisson-cloud.maxpat            # Stochastic Poisson Pulse Burst Generator
+├── filterbank-8.maxpat            # 8-Band Analog Resonant Filterbank
 ├── precision-svf-48db.maxpat       # 8-Stage Cascaded 48dB/oct SVF Filter
 ├── pulsar-synth.maxpat             # Curtis Roads Pulsar Microsound Synthesizer
+├── rings.maxpat                    # Mutable Instruments Rings 24-Mode Modal Resonator
 ├── sature-delay.maxpat             # Lo-Fi Character Delay with Tilt EQ & Diffusion
 ├── tape-hysteresis.maxpat          # Jiles-Atherton Magnetic Hysteresis Waveshaper
 ├── ufo.maxpat                      # Multi-Waveform LFO & Rampsmooth Slew Limiter
@@ -125,16 +134,22 @@ GEN-patches/
 | **Driller** | Delays | [`driller.gendsp`](gendsp/driller.gendsp) | [`driller.maxpat`](driller.maxpat) | 4 In / 3 Out | Dynamic stutter, glitch repeater, continuous circular buffer & beat subdivision lottery |
 | **Erbeverb Clone** | Spatial & Reverbs | [`erbeverb-clone.gendsp`](gendsp/erbeverb-clone.gendsp) | [`erbeverb-clone.maxpat`](erbeverb-clone.maxpat) | 2 In / 2 Out | Unitary 4x4 Hadamard feedback matrix + prime delay lengths + tanh soft limiting |
 | **Fhickup** | Distortion | [`fhickup.gendsp`](gendsp/fhickup.gendsp) | [`fhickup.maxpat`](fhickup.maxpat) | 4 In / 2 Out | Overdrive with loudness comp + stochastic amplitude chopper + morphing telephone SVF |
+| **Multiband Drive** | Distortion | [`multiband-drive.gendsp`](gendsp/multiband-drive.gendsp) | [`multiband-drive.maxpat`](multiband-drive.maxpat) | 2 In / 5 Out | 3-band LR4 crossover (24dB/oct) + 3 independent morphing distortion cores & notch gain |
+| **Pisound Drive** | Distortion | [`pisound-drive.gendsp`](gendsp/pisound-drive.gendsp) | [`pisound-drive.maxpat`](pisound-drive.maxpat) | 3 In / 2 Out | 4-model distortion (Tanh, Wavefolder, Quantizer, Modulo Wrap) + loudness normalization & morphing |
 | **FM Supermod** | Modulation | [`fm-supermod.gendsp`](gendsp/fm-supermod.gendsp) | [`fm-supermod.maxpat`](fm-supermod.maxpat) | 4 In / 2 Out | Chowning PM with DX7 Self-FM, quadrature stereo spread, warm tube soft-clipping & 3 live audio modes (Ring Mod, Doppler FM, Adaptive Audio FM) |
 | **Frost Machine** | Granular | [`frost-machine.gendsp`](gendsp/frost-machine.gendsp) | [`frost-machine.maxpat`](frost-machine.maxpat) | 2 In / 2 Out | 4 allpass pre-diffusers + cross-coupled chorus tank + post-fuzz + sidechain pump |
 | **Grainer** | Granular | [`grainer.gendsp`](gendsp/grainer.gendsp) | [`grainer.maxpat`](grainer.maxpat) | 4 In / 4 Out | Envelope follower transient detector + rectangular grain micro-fade window + Bernoulli gate |
 | **Skipper** | Granular | [`skipper.gendsp`](gendsp/skipper.gendsp) | [`skipper.maxpat`](skipper.maxpat) | 2 In / 4 Out | Stochastic CD glitch looper + variable-speed cubic playhead (forward/reverse) + decimation & hickup |
 | **Householder FDN 16** | Spatial & Reverbs | [`householder-fdn-16.gendsp`](gendsp/householder-fdn-16.gendsp) | [`householder-fdn-16.maxpat`](householder-fdn-16.maxpat) | 2 In / 2 Out | 16-delay FDN with $O(N)$ Householder reflection matrix $H = I - \frac{2}{N}\mathbf{1}\mathbf{1}^T$ |
+| **Butterworth Highpass** | Filters | [`hp_butterworth.gendsp`](gendsp/hp_butterworth.gendsp) | [`lowpasss_highpass.maxpat`](lowpasss_highpass.maxpat) | 1 In / 1 Out | 4th-order cascaded biquad Butterworth highpass (24 dB/oct) with parameter smoothing |
+| **Butterworth Lowpass** | Filters | [`lp_butterworth.gendsp`](gendsp/lp_butterworth.gendsp) | [`lowpasss_highpass.maxpat`](lowpasss_highpass.maxpat) | 1 In / 1 Out | 4th-order cascaded biquad Butterworth lowpass (24 dB/oct) with parameter smoothing |
 | **Lorenz-Rössler Chaos** | Modulation | [`lorenz-rossler-chaos.gendsp`](gendsp/lorenz-rossler-chaos.gendsp) | [`lorenz-rossler-chaos.maxpat`](lorenz-rossler-chaos.maxpat) | 2 In / 4 Out | 4th-Order Runge-Kutta (RK4) numerical integration of 3D non-linear ODE attractors |
 | **Offset Spline Random** | Stochastic | [`offset-spline-random.gendsp`](gendsp/offset-spline-random.gendsp) | [`offset-spline-random.maxpat`](offset-spline-random.maxpat) | 2 In / 4 Out | Bounded random walk + 6-point FIFO shift register + cubic Hermite spline interpolation |
 | **Poisson Cloud** | Stochastic | [`poisson-cloud.gendsp`](gendsp/poisson-cloud.gendsp) | [`poisson-cloud.maxpat`](poisson-cloud.maxpat) | 2 In / 3 Out | Inverse transform Poisson point process $\Delta t = -\frac{\ln(U)}{\lambda}$ PWM burst generator |
+| **Filterbank-8** | Filters | [`filterbank-8.gendsp`](gendsp/filterbank-8.gendsp) | [`filterbank-8.maxpat`](filterbank-8.maxpat) | 2 In / 4 Out | 8-band ZDF SVF resonant filterbank with non-linear feedback saturation limit cycles & pitch shift |
 | **Precision SVF 48dB** | Filters | [`precision-svf-48db.gendsp`](gendsp/precision-svf-48db.gendsp) | [`precision-svf-48db.maxpat`](precision-svf-48db.maxpat) | 2 In / 2 Out | 4 cascaded SVF stages per channel (48 dB/oct LP/HP) + log smoothing + nonlinear drive |
 | **Pulsar Synth** | Granular | [`pulsar-synth.gendsp`](gendsp/pulsar-synth.gendsp) | [`pulsar-synth.maxpat`](pulsar-synth.maxpat) | 2 In / 2 Out | Curtis Roads pulsar synthesis: fundamental rate $f_0$, pulsaret formant $f_f$, duty ratio $d/T$ |
+| **Rings** | Physical | [`rings.gendsp`](gendsp/rings.gendsp) | [`rings.maxpat`](rings.maxpat) | 3 In / 4 Out | Mutable Instruments Rings 24-mode ZDF SVF modal resonator + material structure & pluck exciter |
 | **Sature Delay** | Delays | [`sature-delay.gendsp`](gendsp/sature-delay.gendsp) | [`sature-delay.maxpat`](sature-delay.maxpat) | 2 In / 2 Out | Fractional tape delay + dual degradation (bitcrush vs tape sag) + tilt EQ + allpass diffusion |
 | **Tape Hysteresis** | Distortion | [`tape-hysteresis.gendsp`](gendsp/tape-hysteresis.gendsp) | [`tape-hysteresis.maxpat`](tape-hysteresis.maxpat) | 2 In / 2 Out | Discrete Jiles-Atherton differential magnetic domain formulation evaluating $\frac{dM}{dH}$ |
 | **UFO Multi-LFO** | Modulation | [`ufo.gendsp`](gendsp/ufo.gendsp) | [`ufo.maxpat`](ufo.maxpat) | 2 In / 1 Out | Multi-waveform oscillator + exponential curvature shaping + GenExpr rampsmooth slew limiter |

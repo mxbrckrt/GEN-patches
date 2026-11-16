@@ -81,6 +81,115 @@ MODELS = [
         ]
     },
     {
+        "id": "multiband-drive",
+        "name": "Multiband Drive",
+        "title": "3-Band Linkwitz-Riley LR4 Crossover Distortion Engine",
+        "category": "distortion",
+        "category_label": "Distortion & Saturation",
+        "badge": "Multiband Distortion",
+        "gendsp": "gendsp/multiband-drive.gendsp",
+        "maxpat": "multiband-drive.maxpat",
+        "description": "Studio-grade 3-band distortion workstation featuring a 4th-order Linkwitz-Riley (LR4 - 24 dB/octave) phase-coherent crossover splitting the stereo spectrum into Low, Mid, and High frequency bands. Each band features independent distortion topology with continuous equal-power morphing across 4 calibrated models (Tanh Overdrive, Wavefolder, Quantizer, Modulo Wrap), dynamic loudness energy normalization, dedicated drive intensity & dry/wet saturation mix, and drastic band gain cut down to -48 dB (with -24 dB deep notch/erase) up to +12 dB. Finished with master makeup gain, DC-blocking, warm tanh soft-clipping, and master Dry/Wet mix.",
+        "dsp_paradigm": "Dual-stage cascaded Butterworth LR4 crossover (24 dB/oct) + 3 independent morphing distortion cores (Tanh, Fold, Quantize, Wrap) + per-band notch gain + soft-clipping sum",
+        "inlets": [
+            "in1: Left audio input",
+            "in2: Right audio input"
+        ],
+        "outlets": [
+            "out1: Processed Left audio (Dry/Wet)",
+            "out2: Processed Right audio (Dry/Wet)",
+            "out3: Low band audio monitor",
+            "out4: Mid band audio monitor",
+            "out5: High band audio monitor"
+        ],
+        "block_diagram": """[in1, in2] ──┬──> [Stage 1 LR4 Crossover: f1] ──────────────────────────┐
+             │         │                                                │
+             │         ├─ (Lowpass) ──> [Low Band Core] (Drive & Gain) ─┤
+             │         │                                                │
+             │         └─ (Highpass: Rest)                              │
+             │                   │                                      │
+             │                   ▼                                      │
+             │             [Stage 2 LR4 Crossover: f2]                  │
+             │                   │                                      │
+             │                   ├─ (Lowpass) ──> [Mid Band Core] ──────┤
+             │                   │                                      │
+             │                   └─ (Highpass) ─> [High Band Core] ─────┤
+             │                                                          │
+             │                                                          ▼
+             └──> [Dry Audio] ───────────────────────────────> [Sum, Limit & Mix]
+                                                                        │
+                                                                        ▼
+                                                                   [out1, out2]""",
+        "parameters": [
+            {"name": "crossover1", "range": "20 – 2000 Hz", "default": "250", "desc": "Fréquence de séparation Low / Mid (Hz)"},
+            {"name": "crossover2", "range": "200 – 18000 Hz", "default": "3500", "desc": "Fréquence de séparation Mid / High (Hz)"},
+            {"name": "low_band_gain", "range": "-48 – 12 dB", "default": "0", "desc": "Gain de la bande Low (-24dB notch profond, -48dB mute)"},
+            {"name": "low_drive_mix", "range": "0 – 100 %", "default": "50", "desc": "Dosage de saturation / drive sur la bande Low"},
+            {"name": "low_model_choice", "range": "0 – 100 %", "default": "0", "desc": "Choix du modèle de distorsion Low (0%: Tanh, 33%: Fold, 67%: Quant, 100%: Wrap)"},
+            {"name": "mid_band_gain", "range": "-48 – 12 dB", "default": "0", "desc": "Gain de la bande Mid"},
+            {"name": "mid_drive_mix", "range": "0 – 100 %", "default": "50", "desc": "Dosage de saturation / drive sur la bande Mid"},
+            {"name": "mid_model_choice", "range": "0 – 100 %", "default": "33.3", "desc": "Choix du modèle de distorsion Mid (défaut: Wavefolder)"},
+            {"name": "high_band_gain", "range": "-48 – 12 dB", "default": "0", "desc": "Gain de la bande High"},
+            {"name": "high_drive_mix", "range": "0 – 100 %", "default": "50", "desc": "Dosage de saturation / drive sur la bande High"},
+            {"name": "high_model_choice", "range": "0 – 100 %", "default": "0", "desc": "Choix du modèle de distorsion High"},
+            {"name": "gain", "range": "-24 – 12 dB", "default": "0", "desc": "Gain de sortie master make-up"},
+            {"name": "mix", "range": "0 – 100 %", "default": "100", "desc": "Balance Dry / Wet master"}
+        ]
+    },
+    {
+        "id": "pisound-drive",
+        "name": "Pisound Drive",
+        "title": "Morphing Multi-Model Distortion Engine with Loudness Normalization",
+        "category": "distortion",
+        "category_label": "Distortion & Saturation",
+        "badge": "Morphing Distortion",
+        "gendsp": "gendsp/pisound-drive.gendsp",
+        "maxpat": "pisound-drive.maxpat",
+        "description": "High-definition GenExpr port and refinement of the Pisound Drive processor. Stripped of legacy predrive and hickup stages, this pure codebox architecture focuses on four distinct distortion topologies seamlessly unified by an equal-power continuous morphing gesture: warm Tanh Overdrive, Buchla/Serge-style Wavefolding, Digital Staircase Bitcrushing, and aggressive Modulo Wrap. Features calibrated loudness weighting (energy normalization across all models), analog one-pole lowpass tone control, soft-clipping protection, and dry/wet blending.",
+        "dsp_paradigm": "4-topology saturation core (Tanh, Fold, Bitcrush, Wrap) + equal-power morphing gesture + calibrated loudness energy normalization + 1-pole tone filter",
+        "inlets": [
+            "in1: Left audio input",
+            "in2: Right audio input",
+            "in3: Drive CV modulation"
+        ],
+        "outlets": [
+            "out1: Processed Left audio (Dry/Wet)",
+            "out2: Processed Right audio (Dry/Wet)"
+        ],
+        "block_diagram": """[in1, in2] ──┬──> [Drive Multiplier] (drive + in3)
+             │            │
+             │            ▼
+             │     ┌─────────────── 4 Distortion Topologies ───────────────┐
+             │     │ Model 1: Tanh Analog Soft Saturation                  │
+             │     │ Model 2: Wavefolder (Symmetric Buchla/Serge fold)     │
+             │     │ Model 3: Quantizer (Staircase Bitcrush + DC-Block)   │
+             │     │ Model 4: Modulo Wrap (Cyclic hard wrap-around)        │
+             │     └───────────────────────────────────────────────────────┘
+             │                               │
+             │                               ▼
+             │                    [Loudness Normalization]
+             │                    (Calibrated equal RMS weighting)
+             │                               │
+             │                               ▼
+             │                   [Equal-Power Morphing]
+             │                   (Continuous model crossfade: 0..100%)
+             │                               │
+             │                               ▼
+             │                     [Analog Tone Filter]
+             │                     (1-pole lowpass: 100..18kHz)
+             │                               │
+             │                               ▼
+             └──> [Dry Audio] ───────> [Soft Limiter & Mix] ──> [out1, out2]""",
+        "parameters": [
+            {"name": "drive", "range": "0 – 100 %", "default": "30", "desc": "Distortion drive intensity"},
+            {"name": "model", "range": "0 – 100 %", "default": "0", "desc": "Continuous morphing across the 4 drive engines (0%: Tanh, 33%: Fold, 67%: Quantize, 100%: Wrap)"},
+            {"name": "tone", "range": "100 – 18000 Hz", "default": "12000", "desc": "Post-distortion analog 1-pole lowpass filter cutoff"},
+            {"name": "level_comp", "range": "0 / 1", "default": "1", "desc": "Enable calibrated loudness energy normalization across models"},
+            {"name": "gain", "range": "-24 – 12 dB", "default": "0", "desc": "Master make-up gain trim"},
+            {"name": "mix", "range": "0 – 100 %", "default": "100", "desc": "Master Dry / Wet blend ratio"}
+        ]
+    },
+    {
         "id": "fhickup",
         "name": "Fhickup",
         "title": "Telephone Crossover Filter, Overdrive & Amplitude Chopper",
@@ -701,6 +810,108 @@ MODELS = [
         ]
     },
     {
+        "id": "filterbank-8",
+        "name": "Filterbank-8",
+        "title": "8-Band Analog Resonant Filterbank with Limit-Cycle Saturation",
+        "category": "filters",
+        "category_label": "Filters & Subtractive",
+        "badge": "Resonant Filterbank",
+        "gendsp": "gendsp/filterbank-8.gendsp",
+        "maxpat": "filterbank-8.maxpat",
+        "description": "High-definition 8-band analog-modeled resonant filterbank inspired by classic modular filterbanks (Moog 914, Serge Resonant Equalizer, Buchla 296). Features 8 second-order Zero-Delay Feedback (ZDF) State Variable Filters tuned to a musical octave ladder (C2 65.4 Hz to C9 8372 Hz). Each band features non-linear tanh saturation in the feedback path, enabling the resonance (Q) to reach singing near-self-oscillation without numerical divergence or clipping, producing warm analog limit cycles. Includes master pitch/formant transposition (-24..+24 semitones), individual band levels (-48 dB to +12 dB), odd/even spatial stereo spread, analog pre-drive, and master Dry/Wet mix.",
+        "dsp_paradigm": "8-band parallel ZDF SVF with saturating feedback limit cycles + global formant transpose + odd/even stereo panning + soft-clipping master",
+        "inlets": [
+            "in1: Left audio input",
+            "in2: Right audio input"
+        ],
+        "outlets": [
+            "out1: Processed Left audio (Dry/Wet)",
+            "out2: Processed Right audio (Dry/Wet)",
+            "out3: Low bands (1-4) monitor sum",
+            "out4: High bands (5-8) monitor sum"
+        ],
+        "block_diagram": """[in1, in2] ──┬──> [Analog Pre-Drive] (tanh)
+             │            │
+             │            ▼
+             │     ┌─── 8 Parallel Saturating ZDF SVF Resonators (C2..C9) ───┐
+             │     │ Band 1:  65.4 Hz (Sub)        Band 5: 1046.5 Hz (Vocal) │
+             │     │ Band 2: 130.8 Hz (Bass)       Band 6: 2093.0 Hz (Pres)  │
+             │     │ Band 3: 261.6 Hz (Warmth)     Band 7: 4186.0 Hz (Brill) │
+             │     │ Band 4: 523.2 Hz (Body)       Band 8: 8372.0 Hz (Air)   │
+             │     │ (Non-linear tanh feedback -> Stable Singing Limit Cycle)│
+             │     └─────────────────────────────────────────────────────────┘
+             │                               │
+             │                               ▼
+             │                    [Individual Band Gains]
+             │                    (gain_1..gain_8: -48..+12 dB)
+             │                               │
+             │                               ▼
+             │                   [Odd / Even Stereo Panning]
+             │                   (stereo_spread: 0..100%)
+             │                               │
+             │                               ▼
+             └──> [Dry Audio] ───────> [Soft Limiter & Mix] ──> [out1, out2]""",
+        "parameters": [
+            {"name": "freq_shift", "range": "-24 – 24 semi", "default": "0", "desc": "Transposition globale des 8 formants / fréquences en demi-tons"},
+            {"name": "q_global", "range": "0.5 – 50.0", "default": "4.0", "desc": "Facteur de résonance global (quasi-auto-oscillation au-delà de 25)"},
+            {"name": "drive", "range": "0 – 100 %", "default": "20", "desc": "Pré-amplification / saturation analogique d'entrée"},
+            {"name": "soft_clip", "range": "0 – 100 %", "default": "50", "desc": "Intensité de saturation non-linéaire dans les boucles de résonance"},
+            {"name": "stereo_spread", "range": "0 – 100 %", "default": "50", "desc": "Élargissement spatial alterné des bandes paires/impaires"},
+            {"name": "gain_1", "range": "-48 – 12 dB", "default": "0", "desc": "Niveau Bande 1 (65.4 Hz - C2)"},
+            {"name": "gain_2", "range": "-48 – 12 dB", "default": "0", "desc": "Niveau Bande 2 (130.8 Hz - C3)"},
+            {"name": "gain_3", "range": "-48 – 12 dB", "default": "0", "desc": "Niveau Bande 3 (261.6 Hz - C4)"},
+            {"name": "gain_4", "range": "-48 – 12 dB", "default": "0", "desc": "Niveau Bande 4 (523.2 Hz - C5)"},
+            {"name": "gain_5", "range": "-48 – 12 dB", "default": "0", "desc": "Niveau Bande 5 (1046.5 Hz - C6)"},
+            {"name": "gain_6", "range": "-48 – 12 dB", "default": "0", "desc": "Niveau Bande 6 (2093.0 Hz - C7)"},
+            {"name": "gain_7", "range": "-48 – 12 dB", "default": "0", "desc": "Niveau Bande 7 (4186.0 Hz - C8)"},
+            {"name": "gain_8", "range": "-48 – 12 dB", "default": "0", "desc": "Niveau Bande 8 (8372.0 Hz - C9)"},
+            {"name": "gain", "range": "-24 – 12 dB", "default": "0", "desc": "Gain de sortie master make-up"},
+            {"name": "mix", "range": "0 – 100 %", "default": "100", "desc": "Balance Dry / Wet master"}
+        ]
+    },
+        {
+        "id": "hp-butterworth",
+        "name": "Butterworth Highpass 24dB",
+        "title": "4th-Order Butterworth Highpass Filter (24 dB/oct)",
+        "category": "filters",
+        "category_label": "Filters & Subtractive",
+        "badge": "Filter",
+        "gendsp": "gendsp/hp_butterworth.gendsp",
+        "maxpat": "lowpasss_highpass.maxpat",
+        "description": "Steep-slope 4th-order (24 dB/octave) highpass filter consisting of two cascaded 2nd-order biquad stages in Direct Form I. Features exponential parameter smoothing to ensure click-free real-time cutoff modulation. Designed as a versatile utility crossover and subsonic filter with maximally flat passband response.",
+        "dsp_paradigm": "Dual cascaded biquad Direct Form I 4th-order Butterworth highpass + exponential parameter smoothing",
+        "inlets": ["in1: Audio input signal"],
+        "outlets": ["out1: Filtered highpass output (24 dB/oct)"],
+        "block_diagram": """[in1: Audio] ──> [Biquad 1 (Q=0.541, 12dB/oct)] ──> [Biquad 2 (Q=1.307, 12dB/oct)] ──> [out1: 24dB/oct HP]
+                                      ▲                                      ▲
+                                      └──────────── [Smooth Cutoff] ─────────┘""",
+        "parameters": [
+            {"name": "freq", "range": "10 – 20000 Hz", "default": "80", "desc": "Target cutoff frequency in Hz"},
+            {"name": "smooth", "range": "0 – 1000 ms", "default": "100", "desc": "Cutoff frequency smoothing time in ms"}
+        ]
+    },
+    {
+        "id": "lp-butterworth",
+        "name": "Butterworth Lowpass 24dB",
+        "title": "4th-Order Butterworth Lowpass Filter (24 dB/oct)",
+        "category": "filters",
+        "category_label": "Filters & Subtractive",
+        "badge": "Filter",
+        "gendsp": "gendsp/lp_butterworth.gendsp",
+        "maxpat": "lowpasss_highpass.maxpat",
+        "description": "Steep-slope 4th-order (24 dB/octave) lowpass filter consisting of two cascaded 2nd-order biquad stages in Direct Form I. Features exponential parameter smoothing to ensure click-free real-time cutoff modulation. Designed as a versatile utility crossover and tone filter with maximally flat passband response.",
+        "dsp_paradigm": "Dual cascaded biquad Direct Form I 4th-order Butterworth lowpass + exponential parameter smoothing",
+        "inlets": ["in1: Audio input signal"],
+        "outlets": ["out1: Filtered lowpass output (24 dB/oct)"],
+        "block_diagram": """[in1: Audio] ──> [Biquad 1 (Q=0.541, 12dB/oct)] ──> [Biquad 2 (Q=1.307, 12dB/oct)] ──> [out1: 24dB/oct LP]
+                                      ▲                                      ▲
+                                      └──────────── [Smooth Cutoff] ─────────┘""",
+        "parameters": [
+            {"name": "freq", "range": "10 – 20000 Hz", "default": "80", "desc": "Target cutoff frequency in Hz"},
+            {"name": "smooth", "range": "0 – 1000 ms", "default": "100", "desc": "Cutoff frequency smoothing time in ms"}
+        ]
+    },
+{
         "id": "precision-svf-48db",
         "name": "Precision SVF 48dB",
         "title": "8-Stage Cascaded 48dB/Oct State Variable Filter",
@@ -906,7 +1117,55 @@ MODELS = [
             {"name": "mix / gainout", "range": "0–100% / -60–12 dB", "default": "100 / 0", "desc": "Dry/Wet blend & output gain"}
         ]
     },
-    {
+        {
+        "id": "rings",
+        "name": "Rings",
+        "title": "Mutable Instruments Rings Modal Resonator (24-Mode ZDF SVF)",
+        "category": "physical",
+        "category_label": "Physical Modeling",
+        "badge": "Physical Model",
+        "gendsp": "gendsp/rings.gendsp",
+        "maxpat": "rings.maxpat",
+        "description": "High-definition 24-mode physical modeling modal resonator based on Émilie Gillet's iconic Mutable Instruments Rings architecture. Simulates acoustic vibrating structures (harmonic strings, vibrating bars, bells, chimes, plates, and drum membranes) using 24 parallel Zero-Delay Feedback (ZDF) SVF bandpass filters, continuous material structure/stiffness inharmonicity interpolation, internal strike/pluck impulse & noise exciter, comb position cancellation, and odd/even harmonic stereo spatialization.",
+        "dsp_paradigm": "24-mode parallel Zero-Delay Feedback (ZDF) state-variable filterbank + non-linear stiffness dispersion + comb node excitation + odd/even stereo spatialization",
+        "inlets": [
+            "in1: Audio Left Input (Excitation source)",
+            "in2: Audio Right Input (Excitation source)",
+            "in3: Strum Trigger (CV / Gate / Impulse signal)"
+        ],
+        "outlets": [
+            "out1: Processed Audio Left (Odd modes + Dry/Wet)",
+            "out2: Processed Audio Right (Even modes + Dry/Wet)",
+            "out3: Excitation Monitor Out",
+            "out4: Strum Envelope CV Out (0..1)"
+        ],
+        "block_diagram": """[in1, in2: Audio In] ──> [Sum / Drive] ──┐
+[in3 / strum: Trig] ─> [Impulse + Noise] ┴─> [Excitation 1-Pole LP] (brightness)
+                                                    │
+        ┌────────────────────────┬──────────────────┴─────┬────────────────────────┐
+        ▼                        ▼                        ▼                        ▼
+  [Mode 0 (f0)]            [Mode 1 (f1)]            [Mode 2 (f2)]           [Mode 23 (f23)]
+  ZDF SVF BP               ZDF SVF BP               ZDF SVF BP              ZDF SVF BP
+  × Comb Amp A0            × Comb Amp A1            × Comb Amp A2           × Comb Amp A23
+        │                        │                        │                        │
+        ▼ (Odd)                  ▼ (Even)                 ▼ (Odd)                  ▼ (Even)
+  [Sum Odd Modes] ────────────────────────────────> [Left Panning Bus]  ──> [DC / Lim] ──> out1
+  [Sum Even Modes] ───────────────────────────────> [Right Panning Bus] ──> [DC / Lim] ──> out2""",
+        "parameters": [
+            {"name": "pitch", "range": "12 – 108", "default": "48", "desc": "Fundamental pitch in MIDI note (48 = C3 = 130.81 Hz)"},
+            {"name": "structure", "range": "0 – 1", "default": "0.25", "desc": "Material geometry & inharmonicity (<0.25: wood pipe, 0.25: string, 0.3..0.85: bar/bell, 0.85..1: plate)"},
+            {"name": "brightness", "range": "0 – 1", "default": "0.5", "desc": "High frequency energy damping and excitation filter cutoff"},
+            {"name": "damping", "range": "0 – 1", "default": "0.6", "desc": "Decay duration (exponential decades from 50ms plucks to 15s shimmer)"},
+            {"name": "position", "range": "0 – 1", "default": "0.25", "desc": "Physical strike / pluck comb cancellation position"},
+            {"name": "stereo_spread", "range": "0 – 100 %", "default": "80", "desc": "Stereo width between odd and even modal series"},
+            {"name": "internal_exciter", "range": "0 – 100 %", "default": "80", "desc": "Internal acoustic strike impulse & noise burst level"},
+            {"name": "drive", "range": "0 – 100 %", "default": "20", "desc": "Input analog saturation pre-gain"},
+            {"name": "gain", "range": "-24 – +12 dB", "default": "0", "desc": "Master makeup gain in dB"},
+            {"name": "mix", "range": "0 – 100 %", "default": "100", "desc": "Master Dry / Wet blend ratio"},
+            {"name": "strum", "range": "0 / 1", "default": "0", "desc": "Manual pluck trigger (bang or toggle)"}
+        ]
+    },
+{
         "id": "waveguide-string",
         "name": "Waveguide String",
         "title": "4-Voice Polyphonic Waveguide Physical String Model",
