@@ -118,8 +118,8 @@
                     "numoutlets": 2,
                     "outlettype": [ "signal", "signal" ],
                     "patching_rect": [ 50.0, 342.0, 165.0, 23.0 ],
-                    "text": "gen~ @gen pisound-drive",
-                    "varname": "pisound_drive"
+                    "text": "gen~ @gen modeldrive",
+                    "varname": "modeldrive"
                 }
             },
             {

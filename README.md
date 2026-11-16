@@ -60,7 +60,7 @@ GEN-patches/
 │   ├── erbeverb-clone.gendsp
 │   ├── fhickup.gendsp
 │   ├── multiband-drive.gendsp
-│   ├── pisound-drive.gendsp
+│   ├── modeldrive.gendsp
 │   ├── fm-supermod.gendsp
 │   ├── frost-machine.gendsp
 │   ├── grainer.gendsp
@@ -94,7 +94,7 @@ GEN-patches/
 ├── erbeverb-clone.maxpat           # Unitary 4x4 Hadamard FDN Reverb
 ├── fhickup.maxpat                  # Telephone Crossover Filter, Overdrive & Amplitude Chopper
 ├── multiband-drive.maxpat          # 3-Band Linkwitz-Riley Crossover Distortion Engine
-├── pisound-drive.maxpat            # Morphing Multi-Model Distortion Engine
+├── modeldrive.maxpat               # Morphing Multi-Model Distortion Engine
 ├── fm-supermod.maxpat              # Stereo Bell Phase Modulation & Live Audio Processor
 ├── frost-machine.maxpat            # Reverb, Pre-Diffusers, Fuzz & Ducking
 ├── grainer.maxpat                  # Envelope-Follower Dynamic Grain Burst Generator
@@ -135,7 +135,7 @@ GEN-patches/
 | **Erbeverb Clone** | Spatial & Reverbs | [`erbeverb-clone.gendsp`](gendsp/erbeverb-clone.gendsp) | [`erbeverb-clone.maxpat`](erbeverb-clone.maxpat) | 2 In / 2 Out | Unitary 4x4 Hadamard feedback matrix + prime delay lengths + tanh soft limiting |
 | **Fhickup** | Distortion | [`fhickup.gendsp`](gendsp/fhickup.gendsp) | [`fhickup.maxpat`](fhickup.maxpat) | 4 In / 2 Out | Overdrive with loudness comp + stochastic amplitude chopper + morphing telephone SVF |
 | **Multiband Drive** | Distortion | [`multiband-drive.gendsp`](gendsp/multiband-drive.gendsp) | [`multiband-drive.maxpat`](multiband-drive.maxpat) | 2 In / 5 Out | 3-band LR4 crossover (24dB/oct) + 3 independent morphing distortion cores & notch gain |
-| **Pisound Drive** | Distortion | [`pisound-drive.gendsp`](gendsp/pisound-drive.gendsp) | [`pisound-drive.maxpat`](pisound-drive.maxpat) | 3 In / 2 Out | 4-model distortion (Tanh, Wavefolder, Quantizer, Modulo Wrap) + loudness normalization & morphing |
+| **Model Drive** | Distortion | [`modeldrive.gendsp`](gendsp/modeldrive.gendsp) | [`modeldrive.maxpat`](modeldrive.maxpat) | 3 In / 2 Out | 4-model distortion (Tanh, Wavefolder, Quantizer, Modulo Wrap) + loudness normalization & morphing |
 | **FM Supermod** | Modulation | [`fm-supermod.gendsp`](gendsp/fm-supermod.gendsp) | [`fm-supermod.maxpat`](fm-supermod.maxpat) | 4 In / 2 Out | Chowning PM with DX7 Self-FM, quadrature stereo spread, warm tube soft-clipping & 3 live audio modes (Ring Mod, Doppler FM, Adaptive Audio FM) |
 | **Frost Machine** | Granular | [`frost-machine.gendsp`](gendsp/frost-machine.gendsp) | [`frost-machine.maxpat`](frost-machine.maxpat) | 2 In / 2 Out | 4 allpass pre-diffusers + cross-coupled chorus tank + post-fuzz + sidechain pump |
 | **Grainer** | Granular | [`grainer.gendsp`](gendsp/grainer.gendsp) | [`grainer.maxpat`](grainer.maxpat) | 4 In / 4 Out | Envelope follower transient detector + rectangular grain micro-fade window + Bernoulli gate |

@@ -137,15 +137,15 @@ MODELS = [
         ]
     },
     {
-        "id": "pisound-drive",
-        "name": "Pisound Drive",
+        "id": "modeldrive",
+        "name": "Model Drive",
         "title": "Morphing Multi-Model Distortion Engine with Loudness Normalization",
         "category": "distortion",
         "category_label": "Distortion & Saturation",
         "badge": "Morphing Distortion",
-        "gendsp": "gendsp/pisound-drive.gendsp",
-        "maxpat": "pisound-drive.maxpat",
-        "description": "High-definition GenExpr port and refinement of the Pisound Drive processor. Stripped of legacy predrive and hickup stages, this pure codebox architecture focuses on four distinct distortion topologies seamlessly unified by an equal-power continuous morphing gesture: warm Tanh Overdrive, Buchla/Serge-style Wavefolding, Digital Staircase Bitcrushing, and aggressive Modulo Wrap. Features calibrated loudness weighting (energy normalization across all models), analog one-pole lowpass tone control, soft-clipping protection, and dry/wet blending.",
+        "gendsp": "gendsp/modeldrive.gendsp",
+        "maxpat": "modeldrive.maxpat",
+        "description": "High-definition GenExpr 4-model distortion processor. Stripped of legacy predrive and hickup stages, this pure codebox architecture focuses on four distinct distortion topologies seamlessly unified by an equal-power continuous morphing gesture: warm Tanh Overdrive, Buchla/Serge-style Wavefolding, Digital Staircase Bitcrushing, and aggressive Modulo Wrap. Features calibrated loudness weighting (energy normalization across all models), analog one-pole lowpass tone control, soft-clipping protection, and dry/wet blending.",
         "dsp_paradigm": "4-topology saturation core (Tanh, Fold, Bitcrush, Wrap) + equal-power morphing gesture + calibrated loudness energy normalization + 1-pole tone filter",
         "inlets": [
             "in1: Left audio input",
