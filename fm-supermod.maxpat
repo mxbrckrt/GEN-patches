@@ -14,6 +14,41 @@
         "boxes": [
             {
                 "box": {
+                    "fontsize": 12.0,
+                    "id": "obj-36",
+                    "maxclass": "live.menu",
+                    "numinlets": 1,
+                    "numoutlets": 3,
+                    "outlettype": [ "", "", "float" ],
+                    "parameter_enable": 1,
+                    "patching_rect": [ 739.0, 406.0, 71.0, 18.0 ],
+                    "saved_attribute_attributes": {
+                        "valueof": {
+                            "parameter_enum": [ "free", "harmonic", "risset" ],
+                            "parameter_linknames": 1,
+                            "parameter_longname": "quantize",
+                            "parameter_mmax": 2,
+                            "parameter_modmode": 0,
+                            "parameter_shortname": "quantize",
+                            "parameter_type": 2
+                        }
+                    },
+                    "varname": "quantize"
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-35",
+                    "maxclass": "message",
+                    "numinlets": 2,
+                    "numoutlets": 1,
+                    "outlettype": [ "" ],
+                    "patching_rect": [ 739.0, 448.0, 71.0, 22.0 ],
+                    "text": "quantize $1"
+                }
+            },
+            {
+                "box": {
                     "id": "obj-31",
                     "maxclass": "newobj",
                     "numinlets": 1,
@@ -305,39 +340,51 @@
                     "preset_data": [
                         {
                             "number": 1,
-                            "data": [ 5, "obj-90", "live.dial", "float", 0.10000000149011612, 5, "obj-17", "live.dial", "float", 100.0, 5, "obj-24", "live.dial", "float", 1.4140000343322754, 5, "obj-26", "live.dial", "float", 1.7999999523162842, 5, "obj-32", "live.dial", "float", 0.0, 5, "obj-13", "live.toggle", "float", 0.0, 5, "obj-16", "live.menu", "float", 1.0, 5, "obj-19", "live.toggle", "float", 0.0, 5, "obj-20", "live.menu", "float", 1.0, 5, "obj-22", "number", "float", 100.0, 5, "obj-23", "kslider", "int", 45, 5, "obj-11", "number", "float", 450.0, 5, "obj-1", "live.dial", "float", 41.73228454589844 ]
+                            "data": [ 5, "obj-90", "live.dial", "float", 110.0, 5, "obj-17", "live.dial", "float", 100.0, 5, "obj-24", "live.dial", "float", 1.4140000343322754, 5, "obj-26", "live.dial", "float", 1.7999999523162842, 5, "obj-29", "playlist~", "preset_count", 1, 7, "obj-29", "playlist~", "preset_clipstate", 1, "filekind", "audiofile", 7, "obj-29", "playlist~", "preset_clipstate", 1, "absolutepath", "FemVoice.aif", 7, "obj-29", "playlist~", "preset_clipstate", 1, "filename", "FemVoice.aif", 7, "obj-29", "playlist~", "preset_clipstate", 1, "loop", 1, 8, "obj-29", "playlist~", "preset_clipstate", 1, "selection", -1.0, -1.0, 7, "obj-29", "playlist~", "preset_clipstate", 1, "id", "u241001144", 7, "obj-29", "playlist~", "preset_content", 1, "loop", 1, 4, "obj-29", "playlist~", "preset_execute", 5, "obj-32", "live.dial", "float", 0.0, 5, "obj-13", "live.toggle", "float", 0.0, 5, "obj-16", "live.menu", "float", 1.0, 5, "obj-19", "live.toggle", "float", 0.0, 5, "obj-20", "live.menu", "float", 1.0, 5, "obj-22", "number", "float", 100.0, 5, "obj-23", "kslider", "int", 45, 5, "obj-11", "number", "float", 450.0, 5, "obj-1", "live.dial", "float", 41.73228454589844, 5, "obj-36", "live.menu", "float", 1.0 ]
                         },
                         {
                             "number": 2,
-                            "data": [ 5, "obj-90", "live.dial", "float", 293.6647644042969, 5, "obj-17", "live.dial", "float", 100.0, 5, "obj-24", "live.dial", "float", 11.344802856445312, 5, "obj-26", "live.dial", "float", 3.9445804955740016e-10, 5, "obj-32", "live.dial", "float", 0.0, 5, "obj-13", "live.toggle", "float", 0.0, 5, "obj-16", "live.menu", "float", 1.0, 5, "obj-19", "live.toggle", "float", 1.0, 5, "obj-20", "live.menu", "float", 1.0, 5, "obj-22", "number", "float", 100.0, 5, "obj-23", "kslider", "int", 62, 5, "obj-11", "number", "float", 450.0, 5, "obj-1", "live.dial", "float", 100.0 ]
+                            "data": [ 5, "obj-90", "live.dial", "float", 293.6647644042969, 5, "obj-17", "live.dial", "float", 100.0, 5, "obj-24", "live.dial", "float", 11.344802856445312, 5, "obj-26", "live.dial", "float", 3.9445804955740016e-10, 5, "obj-29", "playlist~", "preset_count", 1, 7, "obj-29", "playlist~", "preset_clipstate", 1, "filekind", "audiofile", 7, "obj-29", "playlist~", "preset_clipstate", 1, "absolutepath", "FemVoice.aif", 7, "obj-29", "playlist~", "preset_clipstate", 1, "filename", "FemVoice.aif", 7, "obj-29", "playlist~", "preset_clipstate", 1, "loop", 1, 8, "obj-29", "playlist~", "preset_clipstate", 1, "selection", -1.0, -1.0, 7, "obj-29", "playlist~", "preset_clipstate", 1, "id", "u241001144", 7, "obj-29", "playlist~", "preset_content", 1, "loop", 1, 4, "obj-29", "playlist~", "preset_execute", 5, "obj-32", "live.dial", "float", 0.0, 5, "obj-13", "live.toggle", "float", 0.0, 5, "obj-16", "live.menu", "float", 1.0, 5, "obj-19", "live.toggle", "float", 1.0, 5, "obj-20", "live.menu", "float", 1.0, 5, "obj-22", "number", "float", 100.0, 5, "obj-23", "kslider", "int", 62, 5, "obj-11", "number", "float", 450.0, 5, "obj-1", "live.dial", "float", 100.0, 5, "obj-36", "live.menu", "float", 2.0 ]
                         },
                         {
                             "number": 3,
-                            "data": [ 5, "obj-90", "live.dial", "float", 110.0, 5, "obj-17", "live.dial", "float", 100.0, 5, "obj-24", "live.dial", "float", 3.3159842491149902, 5, "obj-26", "live.dial", "float", 1.7999999523162842, 5, "obj-32", "live.dial", "float", 0.0, 5, "obj-13", "live.toggle", "float", 0.0, 5, "obj-16", "live.menu", "float", 2.0, 5, "obj-19", "live.toggle", "float", 1.0, 5, "obj-20", "live.menu", "float", 1.0, 5, "obj-22", "number", "float", 100.0, 5, "obj-23", "kslider", "int", 45, 5, "obj-11", "number", "float", 450.0, 5, "obj-1", "live.dial", "float", 93.70079040527344 ]
+                            "data": [ 5, "obj-90", "live.dial", "float", 110.0, 5, "obj-17", "live.dial", "float", 100.0, 5, "obj-24", "live.dial", "float", 3.3159842491149902, 5, "obj-26", "live.dial", "float", 1.7999999523162842, 5, "obj-29", "playlist~", "preset_count", 1, 7, "obj-29", "playlist~", "preset_clipstate", 1, "filekind", "audiofile", 7, "obj-29", "playlist~", "preset_clipstate", 1, "absolutepath", "FemVoice.aif", 7, "obj-29", "playlist~", "preset_clipstate", 1, "filename", "FemVoice.aif", 7, "obj-29", "playlist~", "preset_clipstate", 1, "loop", 1, 8, "obj-29", "playlist~", "preset_clipstate", 1, "selection", -1.0, -1.0, 7, "obj-29", "playlist~", "preset_clipstate", 1, "id", "u241001144", 7, "obj-29", "playlist~", "preset_content", 1, "loop", 1, 4, "obj-29", "playlist~", "preset_execute", 5, "obj-32", "live.dial", "float", 0.0, 5, "obj-13", "live.toggle", "float", 0.0, 5, "obj-16", "live.menu", "float", 2.0, 5, "obj-19", "live.toggle", "float", 1.0, 5, "obj-20", "live.menu", "float", 1.0, 5, "obj-22", "number", "float", 100.0, 5, "obj-23", "kslider", "int", 45, 5, "obj-11", "number", "float", 450.0, 5, "obj-1", "live.dial", "float", 93.70079040527344, 5, "obj-36", "live.menu", "float", 1.0 ]
                         },
                         {
                             "number": 4,
-                            "data": [ 5, "obj-90", "live.dial", "float", 32.70319747924805, 5, "obj-17", "live.dial", "float", 100.0, 5, "obj-24", "live.dial", "float", 3.291574716567993, 5, "obj-26", "live.dial", "float", 1.7999999523162842, 5, "obj-32", "live.dial", "float", 0.0, 5, "obj-13", "live.toggle", "float", 0.0, 5, "obj-16", "live.menu", "float", 3.0, 5, "obj-19", "live.toggle", "float", 1.0, 5, "obj-20", "live.menu", "float", 1.0, 5, "obj-22", "number", "float", 100.0, 5, "obj-23", "kslider", "int", 24, 5, "obj-11", "number", "float", 450.0, 5, "obj-1", "live.dial", "float", 80.0 ]
+                            "data": [ 5, "obj-90", "live.dial", "float", 41.20344543457031, 5, "obj-17", "live.dial", "float", 100.0, 5, "obj-24", "live.dial", "float", 3.173504114151001, 5, "obj-26", "live.dial", "float", 2.9770724773406982, 5, "obj-29", "playlist~", "preset_count", 1, 7, "obj-29", "playlist~", "preset_clipstate", 1, "filekind", "audiofile", 7, "obj-29", "playlist~", "preset_clipstate", 1, "absolutepath", "FemVoice.aif", 7, "obj-29", "playlist~", "preset_clipstate", 1, "filename", "FemVoice.aif", 7, "obj-29", "playlist~", "preset_clipstate", 1, "loop", 1, 8, "obj-29", "playlist~", "preset_clipstate", 1, "selection", -1.0, -1.0, 7, "obj-29", "playlist~", "preset_clipstate", 1, "id", "u241001144", 7, "obj-29", "playlist~", "preset_content", 1, "loop", 1, 4, "obj-29", "playlist~", "preset_execute", 5, "obj-32", "live.dial", "float", 0.0, 5, "obj-13", "live.toggle", "float", 0.0, 5, "obj-16", "live.menu", "float", 3.0, 5, "obj-19", "live.toggle", "float", 1.0, 5, "obj-20", "live.menu", "float", 1.0, 5, "obj-22", "number", "float", 100.0, 5, "obj-23", "kslider", "int", 28, 5, "obj-11", "number", "float", 450.0, 5, "obj-1", "live.dial", "float", 30.0, 5, "obj-36", "live.menu", "float", 1.0 ]
+                        },
+                        {
+                            "number": 5,
+                            "data": [ 5, "obj-90", "live.dial", "float", 43.65353012084961, 5, "obj-17", "live.dial", "float", 100.0, 5, "obj-24", "live.dial", "float", 10.0, 5, "obj-26", "live.dial", "float", 4.182594299316406, 5, "obj-29", "playlist~", "preset_count", 1, 7, "obj-29", "playlist~", "preset_clipstate", 1, "filekind", "audiofile", 7, "obj-29", "playlist~", "preset_clipstate", 1, "absolutepath", "FemVoice.aif", 7, "obj-29", "playlist~", "preset_clipstate", 1, "filename", "FemVoice.aif", 7, "obj-29", "playlist~", "preset_clipstate", 1, "loop", 1, 8, "obj-29", "playlist~", "preset_clipstate", 1, "selection", -1.0, -1.0, 7, "obj-29", "playlist~", "preset_clipstate", 1, "id", "u241001144", 7, "obj-29", "playlist~", "preset_content", 1, "loop", 1, 4, "obj-29", "playlist~", "preset_execute", 5, "obj-32", "live.dial", "float", 0.7716535329818726, 5, "obj-13", "live.toggle", "float", 0.0, 5, "obj-16", "live.menu", "float", 2.0, 5, "obj-19", "live.toggle", "float", 1.0, 5, "obj-20", "live.menu", "float", 1.0, 5, "obj-22", "number", "float", 100.0, 5, "obj-23", "kslider", "int", 29, 5, "obj-11", "number", "float", 450.0, 5, "obj-1", "live.dial", "float", 0.0, 5, "obj-36", "live.menu", "float", 2.0 ]
                         },
                         {
                             "number": 9,
-                            "data": [ 5, "obj-90", "live.dial", "float", 65.4063949584961, 5, "obj-17", "live.dial", "float", 100.0, 5, "obj-24", "live.dial", "float", 2.358566999435425, 5, "obj-26", "live.dial", "float", 2.511708974838257, 5, "obj-32", "live.dial", "float", 0.7874016165733337, 5, "obj-13", "live.toggle", "float", 0.0, 5, "obj-16", "live.menu", "float", 3.0, 5, "obj-19", "live.toggle", "float", 1.0, 5, "obj-20", "live.menu", "float", 3.0, 5, "obj-22", "number", "float", 100.0, 5, "obj-23", "kslider", "int", 36, 5, "obj-11", "number", "float", 40.0, 5, "obj-1", "live.dial", "float", 100.0 ]
+                            "data": [ 5, "obj-90", "live.dial", "float", 65.4063949584961, 5, "obj-17", "live.dial", "float", 100.0, 5, "obj-24", "live.dial", "float", 2.358566999435425, 5, "obj-26", "live.dial", "float", 2.511708974838257, 5, "obj-29", "playlist~", "preset_count", 1, 7, "obj-29", "playlist~", "preset_clipstate", 1, "filekind", "audiofile", 7, "obj-29", "playlist~", "preset_clipstate", 1, "absolutepath", "FemVoice.aif", 7, "obj-29", "playlist~", "preset_clipstate", 1, "filename", "FemVoice.aif", 7, "obj-29", "playlist~", "preset_clipstate", 1, "loop", 1, 8, "obj-29", "playlist~", "preset_clipstate", 1, "selection", -1.0, -1.0, 7, "obj-29", "playlist~", "preset_clipstate", 1, "id", "u241001144", 7, "obj-29", "playlist~", "preset_content", 1, "loop", 1, 4, "obj-29", "playlist~", "preset_execute", 5, "obj-32", "live.dial", "float", 0.7874016165733337, 5, "obj-13", "live.toggle", "float", 0.0, 5, "obj-16", "live.menu", "float", 3.0, 5, "obj-19", "live.toggle", "float", 1.0, 5, "obj-20", "live.menu", "float", 3.0, 5, "obj-22", "number", "float", 100.0, 5, "obj-23", "kslider", "int", 36, 5, "obj-11", "number", "float", 40.0, 5, "obj-1", "live.dial", "float", 100.0, 5, "obj-36", "live.menu", "float", 1.0 ]
                         },
                         {
                             "number": 10,
-                            "data": [ 5, "obj-90", "live.dial", "float", 73.41619110107422, 5, "obj-17", "live.dial", "float", 100.0, 5, "obj-24", "live.dial", "float", 1.4140000343322754, 5, "obj-26", "live.dial", "float", 1.7999999523162842, 5, "obj-32", "live.dial", "float", 0.6929134130477905, 5, "obj-13", "live.toggle", "float", 0.0, 5, "obj-16", "live.menu", "float", 3.0, 5, "obj-19", "live.toggle", "float", 1.0, 5, "obj-20", "live.menu", "float", 3.0, 5, "obj-22", "number", "float", 100.0, 5, "obj-23", "kslider", "int", 38, 5, "obj-11", "number", "float", 40.0, 5, "obj-1", "live.dial", "float", 50.0 ]
+                            "data": [ 5, "obj-90", "live.dial", "float", 73.41619110107422, 5, "obj-17", "live.dial", "float", 100.0, 5, "obj-24", "live.dial", "float", 6.467432975769043, 5, "obj-26", "live.dial", "float", 1.7999999523162842, 5, "obj-29", "playlist~", "preset_count", 1, 7, "obj-29", "playlist~", "preset_clipstate", 1, "filekind", "audiofile", 7, "obj-29", "playlist~", "preset_clipstate", 1, "absolutepath", "FemVoice.aif", 7, "obj-29", "playlist~", "preset_clipstate", 1, "filename", "FemVoice.aif", 7, "obj-29", "playlist~", "preset_clipstate", 1, "loop", 1, 8, "obj-29", "playlist~", "preset_clipstate", 1, "selection", -1.0, -1.0, 7, "obj-29", "playlist~", "preset_clipstate", 1, "id", "u241001144", 7, "obj-29", "playlist~", "preset_content", 1, "loop", 1, 4, "obj-29", "playlist~", "preset_execute", 5, "obj-32", "live.dial", "float", 0.6929134130477905, 5, "obj-13", "live.toggle", "float", 0.0, 5, "obj-16", "live.menu", "float", 3.0, 5, "obj-19", "live.toggle", "float", 1.0, 5, "obj-20", "live.menu", "float", 3.0, 5, "obj-22", "number", "float", 100.0, 5, "obj-23", "kslider", "int", 38, 5, "obj-11", "number", "float", 40.0, 5, "obj-1", "live.dial", "float", 85.43306732177734, 5, "obj-36", "live.menu", "float", 2.0 ]
+                        },
+                        {
+                            "number": 11,
+                            "data": [ 5, "obj-90", "live.dial", "float", 220.0, 5, "obj-17", "live.dial", "float", 100.0, 5, "obj-24", "live.dial", "float", 11.426409721374512, 5, "obj-26", "live.dial", "float", 0.44682690501213074, 5, "obj-29", "playlist~", "preset_count", 1, 7, "obj-29", "playlist~", "preset_clipstate", 1, "filekind", "audiofile", 7, "obj-29", "playlist~", "preset_clipstate", 1, "absolutepath", "FemVoice.aif", 7, "obj-29", "playlist~", "preset_clipstate", 1, "filename", "FemVoice.aif", 7, "obj-29", "playlist~", "preset_clipstate", 1, "loop", 1, 8, "obj-29", "playlist~", "preset_clipstate", 1, "selection", -1.0, -1.0, 7, "obj-29", "playlist~", "preset_clipstate", 1, "id", "u241001144", 7, "obj-29", "playlist~", "preset_content", 1, "loop", 1, 4, "obj-29", "playlist~", "preset_execute", 5, "obj-32", "live.dial", "float", 0.6929134130477905, 5, "obj-13", "live.toggle", "float", 0.0, 5, "obj-16", "live.menu", "float", 3.0, 5, "obj-19", "live.toggle", "float", 1.0, 5, "obj-20", "live.menu", "float", 3.0, 5, "obj-22", "number", "float", 100.0, 5, "obj-23", "kslider", "int", 57, 5, "obj-11", "number", "float", 40.0, 5, "obj-1", "live.dial", "float", 50.0, 5, "obj-36", "live.menu", "float", 1.0 ]
                         },
                         {
                             "number": 17,
-                            "data": [ 5, "obj-90", "live.dial", "float", 60.0, 5, "obj-17", "live.dial", "float", 100.0, 5, "obj-24", "live.dial", "float", 1.4140000343322754, 5, "obj-26", "live.dial", "float", 1.7999999523162842, 5, "obj-32", "live.dial", "float", 0.0, 5, "obj-13", "live.toggle", "float", 0.0, 5, "obj-16", "live.menu", "float", 3.0, 5, "obj-19", "live.toggle", "float", 1.0, 5, "obj-20", "live.menu", "float", 2.0, 5, "obj-22", "number", "float", 100.0, 5, "obj-23", "kslider", "int", 26, 5, "obj-11", "number", "float", 450.0, 5, "obj-1", "live.dial", "float", 50.0 ]
+                            "data": [ 5, "obj-90", "live.dial", "float", 36.70809555053711, 5, "obj-17", "live.dial", "float", 100.0, 5, "obj-24", "live.dial", "float", 1.4140000343322754, 5, "obj-26", "live.dial", "float", 1.7999999523162842, 5, "obj-29", "playlist~", "preset_count", 1, 7, "obj-29", "playlist~", "preset_clipstate", 1, "filekind", "audiofile", 7, "obj-29", "playlist~", "preset_clipstate", 1, "absolutepath", "FemVoice.aif", 7, "obj-29", "playlist~", "preset_clipstate", 1, "filename", "FemVoice.aif", 7, "obj-29", "playlist~", "preset_clipstate", 1, "loop", 1, 8, "obj-29", "playlist~", "preset_clipstate", 1, "selection", -1.0, -1.0, 7, "obj-29", "playlist~", "preset_clipstate", 1, "id", "u241001144", 7, "obj-29", "playlist~", "preset_content", 1, "loop", 1, 4, "obj-29", "playlist~", "preset_execute", 5, "obj-32", "live.dial", "float", 0.0, 5, "obj-13", "live.toggle", "float", 0.0, 5, "obj-16", "live.menu", "float", 3.0, 5, "obj-19", "live.toggle", "float", 1.0, 5, "obj-20", "live.menu", "float", 2.0, 5, "obj-22", "number", "float", 100.0, 5, "obj-23", "kslider", "int", 26, 5, "obj-11", "number", "float", 450.0, 5, "obj-1", "live.dial", "float", 50.0, 5, "obj-36", "live.menu", "float", 1.0 ]
                         },
                         {
                             "number": 18,
-                            "data": [ 5, "obj-90", "live.dial", "float", 65.4063949584961, 5, "obj-17", "live.dial", "float", 100.0, 5, "obj-24", "live.dial", "float", 1.4140000343322754, 5, "obj-26", "live.dial", "float", 2.318079948425293, 5, "obj-32", "live.dial", "float", 0.4566929042339325, 5, "obj-13", "live.toggle", "float", 0.0, 5, "obj-16", "live.menu", "float", 3.0, 5, "obj-19", "live.toggle", "float", 1.0, 5, "obj-20", "live.menu", "float", 2.0, 5, "obj-22", "number", "float", 100.0, 5, "obj-23", "kslider", "int", 36, 5, "obj-11", "number", "float", 450.0, 5, "obj-1", "live.dial", "float", 80.0 ]
+                            "data": [ 5, "obj-90", "live.dial", "float", 65.4063949584961, 5, "obj-17", "live.dial", "float", 100.0, 5, "obj-24", "live.dial", "float", 1.4140000343322754, 5, "obj-26", "live.dial", "float", 2.318079948425293, 5, "obj-29", "playlist~", "preset_count", 1, 7, "obj-29", "playlist~", "preset_clipstate", 1, "filekind", "audiofile", 7, "obj-29", "playlist~", "preset_clipstate", 1, "absolutepath", "FemVoice.aif", 7, "obj-29", "playlist~", "preset_clipstate", 1, "filename", "FemVoice.aif", 7, "obj-29", "playlist~", "preset_clipstate", 1, "loop", 1, 8, "obj-29", "playlist~", "preset_clipstate", 1, "selection", -1.0, -1.0, 7, "obj-29", "playlist~", "preset_clipstate", 1, "id", "u241001144", 7, "obj-29", "playlist~", "preset_content", 1, "loop", 1, 4, "obj-29", "playlist~", "preset_execute", 5, "obj-32", "live.dial", "float", 0.4566929042339325, 5, "obj-13", "live.toggle", "float", 0.0, 5, "obj-16", "live.menu", "float", 3.0, 5, "obj-19", "live.toggle", "float", 1.0, 5, "obj-20", "live.menu", "float", 2.0, 5, "obj-22", "number", "float", 100.0, 5, "obj-23", "kslider", "int", 36, 5, "obj-11", "number", "float", 450.0, 5, "obj-1", "live.dial", "float", 80.0, 5, "obj-36", "live.menu", "float", 0.0 ]
                         },
                         {
                             "number": 19,
-                            "data": [ 5, "obj-90", "live.dial", "float", 65.4063949584961, 5, "obj-17", "live.dial", "float", 100.0, 5, "obj-24", "live.dial", "float", 1.4140000343322754, 5, "obj-26", "live.dial", "float", 3.160285472869873, 5, "obj-32", "live.dial", "float", 0.4094488322734833, 5, "obj-13", "live.toggle", "float", 0.0, 5, "obj-16", "live.menu", "float", 1.0, 5, "obj-19", "live.toggle", "float", 1.0, 5, "obj-20", "live.menu", "float", 2.0, 5, "obj-22", "number", "float", 100.0, 5, "obj-23", "kslider", "int", 36, 5, "obj-11", "number", "float", 450.0, 5, "obj-1", "live.dial", "float", 50.0 ]
+                            "data": [ 5, "obj-90", "live.dial", "float", 65.4063949584961, 5, "obj-17", "live.dial", "float", 100.0, 5, "obj-24", "live.dial", "float", 1.4140000343322754, 5, "obj-26", "live.dial", "float", 3.160285472869873, 5, "obj-29", "playlist~", "preset_count", 1, 7, "obj-29", "playlist~", "preset_clipstate", 1, "filekind", "audiofile", 7, "obj-29", "playlist~", "preset_clipstate", 1, "absolutepath", "FemVoice.aif", 7, "obj-29", "playlist~", "preset_clipstate", 1, "filename", "FemVoice.aif", 7, "obj-29", "playlist~", "preset_clipstate", 1, "loop", 1, 8, "obj-29", "playlist~", "preset_clipstate", 1, "selection", -1.0, -1.0, 7, "obj-29", "playlist~", "preset_clipstate", 1, "id", "u241001144", 7, "obj-29", "playlist~", "preset_content", 1, "loop", 1, 4, "obj-29", "playlist~", "preset_execute", 5, "obj-32", "live.dial", "float", 0.4094488322734833, 5, "obj-13", "live.toggle", "float", 0.0, 5, "obj-16", "live.menu", "float", 1.0, 5, "obj-19", "live.toggle", "float", 1.0, 5, "obj-20", "live.menu", "float", 2.0, 5, "obj-22", "number", "float", 100.0, 5, "obj-23", "kslider", "int", 36, 5, "obj-11", "number", "float", 450.0, 5, "obj-1", "live.dial", "float", 50.0, 5, "obj-36", "live.menu", "float", 2.0 ]
+                        },
+                        {
+                            "number": 20,
+                            "data": [ 5, "obj-90", "live.dial", "float", 65.4063949584961, 5, "obj-17", "live.dial", "float", 100.0, 5, "obj-24", "live.dial", "float", 2.83085036277771, 5, "obj-26", "live.dial", "float", 1.7999999523162842, 5, "obj-29", "playlist~", "preset_count", 1, 7, "obj-29", "playlist~", "preset_clipstate", 1, "filekind", "audiofile", 7, "obj-29", "playlist~", "preset_clipstate", 1, "absolutepath", "FemVoice.aif", 7, "obj-29", "playlist~", "preset_clipstate", 1, "filename", "FemVoice.aif", 7, "obj-29", "playlist~", "preset_clipstate", 1, "loop", 1, 8, "obj-29", "playlist~", "preset_clipstate", 1, "selection", -1.0, -1.0, 7, "obj-29", "playlist~", "preset_clipstate", 1, "id", "u241001144", 7, "obj-29", "playlist~", "preset_content", 1, "loop", 1, 4, "obj-29", "playlist~", "preset_execute", 5, "obj-32", "live.dial", "float", 0.6771653890609741, 5, "obj-13", "live.toggle", "float", 0.0, 5, "obj-16", "live.menu", "float", 1.0, 5, "obj-19", "live.toggle", "float", 1.0, 5, "obj-20", "live.menu", "float", 2.0, 5, "obj-22", "number", "float", 100.0, 5, "obj-23", "kslider", "int", 36, 5, "obj-11", "number", "float", 450.0, 5, "obj-1", "live.dial", "float", 50.0, 5, "obj-36", "live.menu", "float", 1.0 ]
                         },
                         {
                             "number": 24,
@@ -981,6 +1028,19 @@
             },
             {
                 "patchline": {
+                    "destination": [ "obj-34", 0 ],
+                    "midpoints": [ 748.5, 483.0, 513.5, 483.0 ],
+                    "source": [ "obj-35", 0 ]
+                }
+            },
+            {
+                "patchline": {
+                    "destination": [ "obj-35", 0 ],
+                    "source": [ "obj-36", 0 ]
+                }
+            },
+            {
+                "patchline": {
                     "destination": [ "obj-29", 0 ],
                     "hidden": 1,
                     "order": 1,
@@ -1100,6 +1160,7 @@
             "obj-24": [ "ratio", "ratio", 0 ],
             "obj-26": [ "index", "index", 0 ],
             "obj-32": [ "feedback", "feedback", 0 ],
+            "obj-36": [ "quantize", "quantize", 0 ],
             "obj-90": [ "freq", "freq", 0 ],
             "parameterbanks": {
                 "0": {

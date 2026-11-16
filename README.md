@@ -62,6 +62,7 @@ GEN-patches/
 │   ├── fm-supermod.gendsp
 │   ├── frost-machine.gendsp
 │   ├── grainer.gendsp
+│   ├── skipper.gendsp
 │   ├── householder-fdn-16.gendsp
 │   ├── hp_butterworth.gendsp       # Utility: 24dB/oct 4th-order Butterworth HPF
 │   ├── lorenz-rossler-chaos.gendsp
@@ -91,6 +92,7 @@ GEN-patches/
 ├── fm-supermod.maxpat              # Stereo Bell Phase Modulation & Live Audio Processor
 ├── frost-machine.maxpat            # Reverb, Pre-Diffusers, Fuzz & Ducking
 ├── grainer.maxpat                  # Envelope-Follower Dynamic Grain Burst Generator
+├── skipper.maxpat                  # Stochastic CD Glitch, Variable-Speed Looper & Stutter Delay
 ├── householder-fdn-16.maxpat       # 16x16 Householder Matrix Spatial Reverb
 ├── lorenz-rossler-chaos.maxpat     # RK4 Lorenz & Rössler Strange Attractors
 ├── offset-spline-random.maxpat     # 6-Point Hermite Spline Random Walk
@@ -126,6 +128,7 @@ GEN-patches/
 | **FM Supermod** | Modulation | [`fm-supermod.gendsp`](gendsp/fm-supermod.gendsp) | [`fm-supermod.maxpat`](fm-supermod.maxpat) | 4 In / 2 Out | Chowning PM with DX7 Self-FM, quadrature stereo spread, warm tube soft-clipping & 3 live audio modes (Ring Mod, Doppler FM, Adaptive Audio FM) |
 | **Frost Machine** | Granular | [`frost-machine.gendsp`](gendsp/frost-machine.gendsp) | [`frost-machine.maxpat`](frost-machine.maxpat) | 2 In / 2 Out | 4 allpass pre-diffusers + cross-coupled chorus tank + post-fuzz + sidechain pump |
 | **Grainer** | Granular | [`grainer.gendsp`](gendsp/grainer.gendsp) | [`grainer.maxpat`](grainer.maxpat) | 4 In / 4 Out | Envelope follower transient detector + rectangular grain micro-fade window + Bernoulli gate |
+| **Skipper** | Granular | [`skipper.gendsp`](gendsp/skipper.gendsp) | [`skipper.maxpat`](skipper.maxpat) | 2 In / 4 Out | Stochastic CD glitch looper + variable-speed cubic playhead (forward/reverse) + decimation & hickup |
 | **Householder FDN 16** | Spatial & Reverbs | [`householder-fdn-16.gendsp`](gendsp/householder-fdn-16.gendsp) | [`householder-fdn-16.maxpat`](householder-fdn-16.maxpat) | 2 In / 2 Out | 16-delay FDN with $O(N)$ Householder reflection matrix $H = I - \frac{2}{N}\mathbf{1}\mathbf{1}^T$ |
 | **Lorenz-Rössler Chaos** | Modulation | [`lorenz-rossler-chaos.gendsp`](gendsp/lorenz-rossler-chaos.gendsp) | [`lorenz-rossler-chaos.maxpat`](lorenz-rossler-chaos.maxpat) | 2 In / 4 Out | 4th-Order Runge-Kutta (RK4) numerical integration of 3D non-linear ODE attractors |
 | **Offset Spline Random** | Stochastic | [`offset-spline-random.gendsp`](gendsp/offset-spline-random.gendsp) | [`offset-spline-random.maxpat`](offset-spline-random.maxpat) | 2 In / 4 Out | Bounded random walk + 6-point FIFO shift register + cubic Hermite spline interpolation |

@@ -120,11 +120,71 @@ MODELS = [
             {"name": "drive", "range": "0 – 100 %", "default": "15", "desc": "Overdrive gain and saturation depth"},
             {"name": "freq", "range": "50 – 8000 Hz", "default": "1200", "desc": "Crossover / telephone filter center cutoff"},
             {"name": "filter_morph", "range": "0 – 100 %", "default": "50", "desc": "Filter mode: 0=Lowpass, 50=Telephone BP, 100=Highpass"},
-            {"name": "hickfreq", "range": "0.1 – 60 Hz", "default": "8", "desc": "Hickup chopping frequency in Hz"},
+            {"name": "env_to_filt", "range": "-100 – 100 %", "default": "0", "desc": "Dynamic input envelope modulation to filter cutoff (auto-wah)"},
+            {"name": "hickfreq", "range": "0.1 – 1000 Hz", "default": "8", "desc": "Hickup chopping frequency in Hz (sub-audio to audio-rate)"},
             {"name": "hickclick", "range": "0.5 – 100 ms", "default": "15", "desc": "Edge transition smoothing (low = brutal click, high = tremolo)"},
             {"name": "hickmix", "range": "0 – 100 %", "default": "60", "desc": "Hickup amplitude gate intensity"},
+            {"name": "ringmod", "range": "0 – 100 %", "default": "0", "desc": "Crossfade from unipolar gating [0,1] to bipolar ring-mod [-1,+1]"},
             {"name": "stereo_spread", "range": "0 – 100 %", "default": "40", "desc": "Stereo phase divergence between L and R choppers"},
             {"name": "mix", "range": "0 – 100 %", "default": "100", "desc": "Global Dry / Wet blend ratio"}
+        ]
+    },
+    {
+        "id": "skipper",
+        "name": "Skipper",
+        "title": "Stochastic CD Glitch, Variable-Speed Looper & Stutter Delay",
+        "category": "granular",
+        "category_label": "Granular & Microsound",
+        "badge": "CD Glitch & Looper",
+        "gendsp": "gendsp/skipper.gendsp",
+        "maxpat": "skipper.maxpat",
+        "description": "Sample-accurate GenExpr port of the RNBO 'skipper' processor. Emulates the erratic sonic behavior of a skipping, scratched CD player with dual-buffer ping-pong continuous capture and variable-speed looping playhead (including reverse playback), stochastic skip duration and interval generation, digital decimation (downsampling), random equal-power stereo panning, random volume fluctuations, and irregular amplitude dropouts (hickups). Finished with a warm soft limiter and master dry/wet balance.",
+        "dsp_paradigm": "Dual-buffer ping-pong continuous capture + variable-speed cubic Hermite looping playhead (forward/reverse) + micro-fade anti-click windowing + decimation + stochastic hickup & panning",
+        "inlets": [
+            "in1: Left audio input",
+            "in2: Right audio input"
+        ],
+        "outlets": [
+            "out1: Processed Left audio (Dry/Wet)",
+            "out2: Processed Right audio (Dry/Wet)",
+            "out3: Active Grain Duration CV (ms)",
+            "out4: Active Reading Speed CV (-4..+4)"
+        ],
+        "block_diagram": """[in1, in2] ──┬──> [Dual Ping-Pong Capture Buffer (288k)] ──────────┐
+             │    (continuous live background capture)              │
+             │                                                      ▼
+             │                                            [Variable-Speed Playhead]
+             │                                            (-4..+4x, Forward/Reverse)
+             │                                                      │
+             │                                                      ▼
+             │                                            [Anti-Click Micro-Fade]
+             │                                                      │
+             │                                                      ▼
+             │                                            [Decimation & Hickup Gate]
+             │                                                      │
+             │                                                      ▼
+             │                                            [Equal-Power Stereo Panner]
+             │                                                      │
+             │                                                      ▼
+             └──> [Dry Audio] ────────────────────────────────────> [Soft Limiter & Mix]
+                                                                    │
+                                                                    ▼
+                                                               [out1, out2]""",
+        "parameters": [
+            {"name": "automode_speedmin", "range": "2 – 10000 ms", "default": "250", "desc": "Intervalle de temps minimum entre les captures automatiques (ms)"},
+            {"name": "automode_speedmax", "range": "2 – 10000 ms", "default": "1000", "desc": "Intervalle de temps maximum entre les captures automatiques (ms)"},
+            {"name": "automode_grainmin", "range": "2 – 6000 ms", "default": "40", "desc": "Durée minimum du grain capturé en mode auto (ms)"},
+            {"name": "automode_grainmax", "range": "2 – 6000 ms", "default": "800", "desc": "Durée maximum du grain capturé en mode auto (ms)"},
+            {"name": "automode_on", "range": "0 / 1", "default": "1", "desc": "1: Auto actif, 0: Freeze du buffer en cours (boucle infinie)"},
+            {"name": "triggermode", "range": "0 / 1", "default": "1", "desc": "0: Mode manuel (trigger), 1: Mode automatique stochastique"},
+            {"name": "trigger", "range": "0 / 1", "default": "0", "desc": "Capture manuelle (1: enregistre l'audio entrant, 0: boucle le grain capturé)"},
+            {"name": "speed", "range": "-4 – 4", "default": "1.0", "desc": "Vitesse et sens de lecture du buffer (varispeed, négatif = reverse)"},
+            {"name": "downsample", "range": "0 – 100 %", "default": "0", "desc": "Décimation numérique Lo-Fi (downsampling)"},
+            {"name": "volume_percentage", "range": "0 – 100 %", "default": "20", "desc": "Plage de fluctuation aléatoire du volume par capture"},
+            {"name": "hickup_percentage", "range": "0 – 100 %", "default": "20", "desc": "Probabilité de décrochage / dropout d'amplitude"},
+            {"name": "pan_percentage", "range": "0 – 100 %", "default": "80", "desc": "Largeur de spatialisation stéréo équipuissance aléatoire"},
+            {"name": "kill_capture", "range": "0 / 1", "default": "0", "desc": "Purge et coupure des mémoires de capture"},
+            {"name": "mix", "range": "0 – 100 %", "default": "80", "desc": "Balance Dry / Wet master"}
         ]
     },
     {
@@ -215,6 +275,7 @@ MODELS = [
             {"name": "mode", "range": "0 – 3", "default": "1", "desc": "Operating mode: 0: Off/Mute, 1: Ring Mod, 2: Doppler FM, 3: Adaptive FM"},
             {"name": "freq", "range": "20 – 10000 Hz", "default": "220", "desc": "Base carrier frequency in Hz (bypassed if use_note_in=1)"},
             {"name": "ratio", "range": "0.01 – 30", "default": "1.414", "desc": "Modulator/Carrier frequency ratio (1.414 = bell, 1.0 = octave, integers = harmonic)"},
+            {"name": "quantize", "range": "0 – 2", "default": "0", "desc": "Ratio quantization: 0: Free/Continuous, 1: Pure Harmonic Integers, 2: Risset Inharmonic Bell Mode"},
             {"name": "fm_index", "range": "0 – 50", "default": "1.8", "desc": "Phase modulation index / depth of bell partials"},
             {"name": "feedback", "range": "0 – 2.0", "default": "0.25", "desc": "Modulator Self-FM feedback (0 = pure sine, 0.5 = saw, >1 = metallic grit & chaos)"},
             {"name": "stereo_spread", "range": "0 – 100 %", "default": "50", "desc": "Stereo detune width and quadrature spatial phase offset"},
