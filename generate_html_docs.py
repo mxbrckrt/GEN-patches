@@ -705,16 +705,16 @@ MODELS = [
     {
         "id": "lorenz-rossler-chaos",
         "name": "Lorenz-Rössler Chaos",
-        "title": "4th-Order Runge-Kutta Strange Attractor Integrator",
+        "title": "4th-Order Runge-Kutta Strange Attractor & 3D Spatial Engine",
         "category": "modulation",
         "category_label": "Modulation & LFO",
-        "badge": "Chaotic Attractor",
+        "badge": "Chaotic Attractor / 3D Spat",
         "gendsp": "gendsp/lorenz-rossler-chaos.gendsp",
         "maxpat": "lorenz-rossler-chaos.maxpat",
-        "description": "Continuous 3D non-linear dynamic system solver evaluated via 4th-order Runge-Kutta (RK4) numerical integration. Implements Lorenz and Rössler attractors with external cross-modulation injection, audio-rate speed CV, and Poincaré section trigger detection.",
-        "dsp_paradigm": "RK4 integration of non-linear ODEs: Lorenz & Rössler attractors + Poincaré trigger",
+        "description": "Continuous 3D non-linear dynamic system solver evaluated via 4th-order Runge-Kutta (RK4) numerical integration. Implements Lorenz and Rössler attractors calibrated for Cartesian 3D spatialization (X, Y, Z in [-1, 1] where Z=0 is ear level, -1 is floor, +1 is ceiling) or audio-rate chaotic synthesis, with external cross-modulation injection, audio-rate speed CV, and Poincaré section trigger detection.",
+        "dsp_paradigm": "RK4 integration of non-linear ODEs: Lorenz & Rössler attractors + normalized 3D spatialization mapping ([-1, 1]) + Poincaré trigger",
         "inlets": ["in1: External audio / perturbation injection", "in2: Integration speed audio CV (FM rate)"],
-        "outlets": ["out1: X-axis state (-1..1)", "out2: Y-axis state (-1..1)", "out3: Z-axis state (unipolar CV)", "out4: Poincaré section crossing trigger"],
+        "outlets": ["out1: X-axis state (-1..1 Left/Right azimuth)", "out2: Y-axis state (-1..1 Back/Front depth)", "out3: Z-axis state (-1..1 Height: 0=ear level, -1=floor, +1=ceiling)", "out4: Poincaré section crossing trigger"],
         "block_diagram": """[in2: Speed CV] ──> [Time Step: dt] ──┐
 [in1: Inject]   ──> [Perturb State] ──┤
                                       ▼
@@ -731,13 +731,14 @@ MODELS = [
                                       │
                  ┌────────────────────┼────────────────────┬────────────────────┐
                  ▼                    ▼                    ▼                    ▼
-           [out1: X Axis]       [out2: Y Axis]       [out3: Z CV]    [Poincaré Cross ──> out4]""",
+           [out1: X Axis]       [out2: Y Axis]       [out3: Z Axis]  [Poincaré Cross ──> out4]
+            (-1..1 Azim)         (-1..1 Depth)        (-1..1 Height)""",
         "parameters": [
-            {"name": "system", "range": "0 / 1", "default": "0", "desc": "Attractor ODE (0: Lorenz, 1: Rössler)"},
-            {"name": "speed", "range": "0.01 – 1000", "default": "40", "desc": "Base numerical integration rate"},
-            {"name": "drive", "range": "0 – 2.0", "default": "1.0", "desc": "Nonlinear output drive scaling"},
-            {"name": "param_rho", "range": "10 – 60", "default": "28", "desc": "Bifurcation control parameter (rho / c)"},
-            {"name": "inject", "range": "0 – 1", "default": "0", "desc": "External signal injection into state vector"}
+            {"name": "system", "range": "0 / 1", "default": "1", "desc": "Attractor ODE (0: Lorenz butterfly, 1: Rössler spiral)"},
+            {"name": "speed", "range": "0.01 – 1000", "default": "2.0", "desc": "Base integration rate (<20: 3D spatial LFO, >50: audio osc)"},
+            {"name": "drive", "range": "0 – 2.0", "default": "1.0", "desc": "Lorenz sigma scaling / non-linear coupling strength"},
+            {"name": "param_rho", "range": "10 – 60", "default": "30", "desc": "Bifurcation parameter (Lorenz rho / Rössler c threshold)"},
+            {"name": "inject", "range": "0 – 1", "default": "0", "desc": "External signal perturbation on X state"}
         ]
     },
     {

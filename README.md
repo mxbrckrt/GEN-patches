@@ -143,7 +143,7 @@ GEN-patches/
 | **Householder FDN 16** | Spatial & Reverbs | [`householder-fdn-16.gendsp`](gendsp/householder-fdn-16.gendsp) | [`householder-fdn-16.maxpat`](householder-fdn-16.maxpat) | 2 In / 2 Out | 16-delay FDN with $O(N)$ Householder reflection matrix $H = I - \frac{2}{N}\mathbf{1}\mathbf{1}^T$ |
 | **Butterworth Highpass** | Filters | [`hp_butterworth.gendsp`](gendsp/hp_butterworth.gendsp) | [`lowpasss_highpass.maxpat`](lowpasss_highpass.maxpat) | 1 In / 1 Out | 4th-order cascaded biquad Butterworth highpass (24 dB/oct) with parameter smoothing |
 | **Butterworth Lowpass** | Filters | [`lp_butterworth.gendsp`](gendsp/lp_butterworth.gendsp) | [`lowpasss_highpass.maxpat`](lowpasss_highpass.maxpat) | 1 In / 1 Out | 4th-order cascaded biquad Butterworth lowpass (24 dB/oct) with parameter smoothing |
-| **Lorenz-Rössler Chaos** | Modulation | [`lorenz-rossler-chaos.gendsp`](gendsp/lorenz-rossler-chaos.gendsp) | [`lorenz-rossler-chaos.maxpat`](lorenz-rossler-chaos.maxpat) | 2 In / 4 Out | 4th-Order Runge-Kutta (RK4) numerical integration of 3D non-linear ODE attractors |
+| **Lorenz-Rössler Chaos** | Modulation | [`lorenz-rossler-chaos.gendsp`](gendsp/lorenz-rossler-chaos.gendsp) | [`lorenz-rossler-chaos.maxpat`](lorenz-rossler-chaos.maxpat) | 2 In / 4 Out | 4th-Order Runge-Kutta (RK4) integration of 3D chaotic attractors; normalized Cartesian 3D spatial outputs (X, Y, Z in [-1, 1]) + Poincaré trigger |
 | **Offset Spline Random** | Stochastic | [`offset-spline-random.gendsp`](gendsp/offset-spline-random.gendsp) | [`offset-spline-random.maxpat`](offset-spline-random.maxpat) | 2 In / 4 Out | Bounded random walk + 6-point FIFO shift register + cubic Hermite spline interpolation |
 | **Poisson Cloud** | Stochastic | [`poisson-cloud.gendsp`](gendsp/poisson-cloud.gendsp) | [`poisson-cloud.maxpat`](poisson-cloud.maxpat) | 2 In / 3 Out | Inverse transform Poisson point process $\Delta t = -\frac{\ln(U)}{\lambda}$ PWM burst generator |
 | **Filterbank-8** | Filters | [`filterbank-8.gendsp`](gendsp/filterbank-8.gendsp) | [`filterbank-8.maxpat`](filterbank-8.maxpat) | 2 In / 4 Out | 8-band ZDF SVF resonant filterbank with non-linear feedback saturation limit cycles & pitch shift |
@@ -157,6 +157,24 @@ GEN-patches/
 | **Volt Syphon** | Distortion | [`volt-syphon.gendsp`](gendsp/volt-syphon.gendsp) | [`volt-syphon.maxpat`](volt-syphon.maxpat) | 2 In / 2 Out | Supply-starved four-quadrant multiplier + envelope-tracking dynamic carrier |
 | **Waveguide String** | Physical | [`waveguide-string.gendsp`](gendsp/waveguide-string.gendsp) | [`waveguide-string.maxpat`](waveguide-string.maxpat) | 2 In / 2 Out | 4-voice polyphonic waveguide string model with detuning (unison to noise), dispersion & bridge saturation |
 | **ZDF Diode Ladder** | Filters | [`zdf-diode-ladder.gendsp`](gendsp/zdf-diode-ladder.gendsp) | [`zdf-diode-ladder.maxpat`](zdf-diode-ladder.maxpat) | 2 In / 2 Out | Topology-Preserving Transform (TPT) Zero-Delay Feedback 4-pole diode ladder (TB-303 model) |
+
+---
+
+## 🧭 Modulation & 3D Spatialization Standards
+
+All modulation sources across the library (LFOs, chaotic attractors, stochastic random walks, and spatial multi-agent engines) adhere to a **unified Cartesian 3D spatialization norm** ($[-1, 1]$), ensuring seamless interoperability with spatial audio engines (such as **IRCAM Spat**, **Ambisonics B-format**, **Dolby Atmos**, or **VBAP 3D**) as well as standard parameter modulation:
+
+### 1. 3D Cartesian Coordinate Standard ($[-1, 1]$)
+* **$X \in [-1, 1]$ (Azimuth / Panning)**: Left ($-1.0$) to Right ($+1.0$), Center $= 0.0$.
+* **$Y \in [-1, 1]$ (Elevation / Depth)**: Back ($-1.0$) to Front ($+1.0$), Center $= 0.0$.
+* **$Z \in [-1, 1]$ (Height / Distance)**: Floor / Ground speakers ($-1.0$) $\leftrightarrow$ Listener Ear Level ($0.0$) $\leftrightarrow$ Ceiling / Zenith ($+1.0$).
+
+### 2. Bidirectional Mapping: Bipolar $\leftrightarrow$ Unipolar
+When driving unipolar targets (such as filter cutoffs, delay feedbacks, or VCA amplitudes in $[0, 1]$) or converting unipolar control signals to spatial coordinates, the following canonical mappings apply:
+* **Bipolar to Unipolar:** $y = x \times 0.5 + 0.5 \quad ([-1, 1] \rightarrow [0, 1])$
+* **Unipolar to Bipolar:** $y = x \times 2.0 - 1.0 \quad ([0, 1] \rightarrow [-1, 1])$
+
+This normalized convention enables immediate, zero-friction routing between control generators (e.g., `lorenz-rossler-chaos`, `ufo`, `offset-spline-random`, and multi-source swarm modulators) and spatialization processors without ad-hoc scaling logic.
 
 ---
 
