@@ -90,7 +90,6 @@
             {
                 "box": {
                     "attr": "mix",
-                    "bgcolor": [ 0.125, 0.125, 0.125, 1.0 ],
                     "id": "obj-19",
                     "maxclass": "attrui",
                     "numinlets": 1,
@@ -104,7 +103,6 @@
             {
                 "box": {
                     "attr": "rev_size",
-                    "bgcolor": [ 0.125, 0.125, 0.125, 1.0 ],
                     "id": "obj-17",
                     "maxclass": "attrui",
                     "numinlets": 1,
@@ -118,7 +116,6 @@
             {
                 "box": {
                     "attr": "gainout",
-                    "bgcolor": [ 0.125, 0.125, 0.125, 1.0 ],
                     "id": "obj-11",
                     "maxclass": "attrui",
                     "numinlets": 1,
@@ -154,7 +151,6 @@
             {
                 "box": {
                     "attr": "del_to_rev",
-                    "bgcolor": [ 0.125, 0.125, 0.125, 1.0 ],
                     "id": "obj-3",
                     "maxclass": "attrui",
                     "numinlets": 1,
@@ -168,7 +164,6 @@
             {
                 "box": {
                     "attr": "rev_mod",
-                    "bgcolor": [ 0.125, 0.125, 0.125, 1.0 ],
                     "id": "obj-2",
                     "maxclass": "attrui",
                     "numinlets": 1,
@@ -204,7 +199,6 @@
             {
                 "box": {
                     "attr": "rev_damp",
-                    "bgcolor": [ 0.125, 0.125, 0.125, 1.0 ],
                     "id": "obj-14",
                     "maxclass": "attrui",
                     "numinlets": 1,
@@ -218,7 +212,6 @@
             {
                 "box": {
                     "attr": "rev_diff",
-                    "bgcolor": [ 0.125, 0.125, 0.125, 1.0 ],
                     "id": "obj-21",
                     "maxclass": "attrui",
                     "numinlets": 1,
@@ -232,7 +225,6 @@
             {
                 "box": {
                     "attr": "rev_vol",
-                    "bgcolor": [ 0.125, 0.125, 0.125, 1.0 ],
                     "id": "obj-22",
                     "maxclass": "attrui",
                     "numinlets": 1,
@@ -246,7 +238,6 @@
             {
                 "box": {
                     "attr": "del_fb",
-                    "bgcolor": [ 0.125, 0.125, 0.125, 1.0 ],
                     "id": "obj-23",
                     "maxclass": "attrui",
                     "numinlets": 1,
@@ -260,7 +251,6 @@
             {
                 "box": {
                     "attr": "del_damp",
-                    "bgcolor": [ 0.125, 0.125, 0.125, 1.0 ],
                     "id": "obj-24",
                     "maxclass": "attrui",
                     "numinlets": 1,
@@ -274,7 +264,6 @@
             {
                 "box": {
                     "attr": "del_time",
-                    "bgcolor": [ 0.125, 0.125, 0.125, 1.0 ],
                     "id": "obj-25",
                     "maxclass": "attrui",
                     "numinlets": 1,
@@ -288,7 +277,6 @@
             {
                 "box": {
                     "attr": "del_vol",
-                    "bgcolor": [ 0.125, 0.125, 0.125, 1.0 ],
                     "id": "obj-26",
                     "maxclass": "attrui",
                     "numinlets": 1,
@@ -311,6 +299,8 @@
                     "patching_rect": [ 158.0, 372.0, 48.0, 136.0 ],
                     "saved_attribute_attributes": {
                         "valueof": {
+                            "parameter_initial": [ -70.0 ],
+                            "parameter_initial_enable": 1,
                             "parameter_longname": "live.gain~[1]",
                             "parameter_mmax": 6.0,
                             "parameter_mmin": -70.0,

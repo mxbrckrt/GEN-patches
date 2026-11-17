@@ -15,6 +15,17 @@
         "boxes": [
             {
                 "box": {
+                    "id": "obj-9",
+                    "maxclass": "toggle",
+                    "numinlets": 1,
+                    "numoutlets": 1,
+                    "outlettype": [ "int" ],
+                    "parameter_enable": 0,
+                    "patching_rect": [ 21.0, 725.0, 24.0, 24.0 ]
+                }
+            },
+            {
+                "box": {
                     "id": "obj-5",
                     "maxclass": "newobj",
                     "numinlets": 1,
@@ -35,19 +46,19 @@
                     "preset_data": [
                         {
                             "number": 1,
-                            "data": [ 5, "obj-80", "attrui", "attr", "degrade_prob", 5, "obj-80", "attrui", "float", 60.0, 5, "obj-79", "attrui", "attr", "degrade", 5, "obj-79", "attrui", "float", 30.0, 5, "obj-78", "attrui", "attr", "roll_filter", 5, "obj-78", "attrui", "float", 20.0, 5, "obj-77", "attrui", "attr", "pan_spread", 5, "obj-77", "attrui", "float", 100.0, 5, "obj-76", "attrui", "attr", "vol6", 5, "obj-76", "attrui", "float", 0.65, 5, "obj-75", "attrui", "attr", "vol5", 5, "obj-75", "attrui", "float", 0.7, 5, "obj-74", "attrui", "attr", "vol4", 5, "obj-74", "attrui", "float", 0.7, 5, "obj-73", "attrui", "attr", "vol3", 5, "obj-73", "attrui", "float", 0.8, 5, "obj-72", "attrui", "attr", "vol2", 5, "obj-72", "attrui", "float", 0.8, 5, "obj-71", "attrui", "attr", "vol1", 5, "obj-71", "attrui", "float", 1.0, 5, "obj-10", "toggle", "int", 1, 5, "obj-20", "live.menu", "float", 0.0, 5, "obj-2", "attrui", "attr", "maindelay", 5, "obj-2", "attrui", "float", 600.0, 5, "obj-12", "attrui", "attr", "div2", 5, "obj-12", "attrui", "float", 2.0, 5, "obj-31", "attrui", "attr", "div3", 5, "obj-31", "attrui", "float", 4.0, 5, "obj-32", "attrui", "attr", "div4", 5, "obj-32", "attrui", "float", 8.0, 5, "obj-43", "attrui", "attr", "div5", 5, "obj-43", "attrui", "float", 10.0, 5, "obj-41", "attrui", "attr", "div6", 5, "obj-41", "attrui", "float", 12.0, 5, "obj-39", "attrui", "attr", "probability", 5, "obj-39", "attrui", "float", 100.0, 5, "obj-58", "attrui", "attr", "mute_prob", 5, "obj-58", "attrui", "float", 20.0, 5, "obj-57", "attrui", "attr", "feedback", 5, "obj-57", "attrui", "float", 10.0, 5, "obj-56", "attrui", "attr", "stereo_spread", 5, "obj-56", "attrui", "float", 30.0, 5, "obj-55", "attrui", "attr", "mode", 5, "obj-55", "attrui", "float", 0.0, 5, "obj-49", "attrui", "attr", "mix", 5, "obj-49", "attrui", "float", 100.0, 6, "obj-61", "number~", "list", 0.0, 0.0 ]
+                            "data": [ 5, "obj-80", "attrui", "attr", "degrade_prob", 5, "obj-80", "attrui", "float", 60.0, 5, "obj-79", "attrui", "attr", "degrade", 5, "obj-79", "attrui", "float", 30.0, 5, "obj-78", "attrui", "attr", "roll_filter", 5, "obj-78", "attrui", "float", 20.0, 5, "obj-77", "attrui", "attr", "pan_spread", 5, "obj-77", "attrui", "float", 100.0, 5, "obj-76", "attrui", "attr", "vol6", 5, "obj-76", "attrui", "float", 0.65, 5, "obj-75", "attrui", "attr", "vol5", 5, "obj-75", "attrui", "float", 0.7, 5, "obj-74", "attrui", "attr", "vol4", 5, "obj-74", "attrui", "float", 0.7, 5, "obj-73", "attrui", "attr", "vol3", 5, "obj-73", "attrui", "float", 0.8, 5, "obj-72", "attrui", "attr", "vol2", 5, "obj-72", "attrui", "float", 0.8, 5, "obj-71", "attrui", "attr", "vol1", 5, "obj-71", "attrui", "float", 1.0, 5, "obj-20", "live.menu", "float", 0.0, 5, "obj-2", "attrui", "attr", "maindelay", 5, "obj-2", "attrui", "float", 600.0, 5, "obj-12", "attrui", "attr", "div2", 5, "obj-12", "attrui", "float", 2.0, 5, "obj-31", "attrui", "attr", "div3", 5, "obj-31", "attrui", "float", 4.0, 5, "obj-32", "attrui", "attr", "div4", 5, "obj-32", "attrui", "float", 8.0, 5, "obj-43", "attrui", "attr", "div5", 5, "obj-43", "attrui", "float", 10.0, 5, "obj-41", "attrui", "attr", "div6", 5, "obj-41", "attrui", "float", 12.0, 5, "obj-39", "attrui", "attr", "probability", 5, "obj-39", "attrui", "float", 100.0, 5, "obj-58", "attrui", "attr", "mute_prob", 5, "obj-58", "attrui", "float", 20.0, 5, "obj-57", "attrui", "attr", "feedback", 5, "obj-57", "attrui", "float", 10.0, 5, "obj-56", "attrui", "attr", "stereo_spread", 5, "obj-56", "attrui", "float", 30.0, 5, "obj-55", "attrui", "attr", "mode", 5, "obj-55", "attrui", "float", 0.0, 5, "obj-49", "attrui", "attr", "mix", 5, "obj-49", "attrui", "float", 100.0, 6, "obj-61", "number~", "list", 0.0, 0.0 ]
                         },
                         {
                             "number": 2,
-                            "data": [ 5, "obj-80", "attrui", "attr", "degrade_prob", 5, "obj-80", "attrui", "float", 20.0, 5, "obj-79", "attrui", "attr", "degrade", 5, "obj-79", "attrui", "float", 61.0, 5, "obj-78", "attrui", "attr", "roll_filter", 5, "obj-78", "attrui", "float", 80.0, 5, "obj-77", "attrui", "attr", "pan_spread", 5, "obj-77", "attrui", "float", 100.0, 5, "obj-76", "attrui", "attr", "vol6", 5, "obj-76", "attrui", "float", 0.65, 5, "obj-75", "attrui", "attr", "vol5", 5, "obj-75", "attrui", "float", 0.7, 5, "obj-74", "attrui", "attr", "vol4", 5, "obj-74", "attrui", "float", 0.7, 5, "obj-73", "attrui", "attr", "vol3", 5, "obj-73", "attrui", "float", 0.8, 5, "obj-72", "attrui", "attr", "vol2", 5, "obj-72", "attrui", "float", 0.8, 5, "obj-71", "attrui", "attr", "vol1", 5, "obj-71", "attrui", "float", 1.0, 5, "obj-10", "toggle", "int", 1, 5, "obj-20", "live.menu", "float", 1.0, 5, "obj-2", "attrui", "attr", "maindelay", 5, "obj-2", "attrui", "float", 100.0, 5, "obj-12", "attrui", "attr", "div2", 5, "obj-12", "attrui", "float", 1.1, 5, "obj-31", "attrui", "attr", "div3", 5, "obj-31", "attrui", "float", 1.2, 5, "obj-32", "attrui", "attr", "div4", 5, "obj-32", "attrui", "float", 1.3, 5, "obj-43", "attrui", "attr", "div5", 5, "obj-43", "attrui", "float", 1.4, 5, "obj-41", "attrui", "attr", "div6", 5, "obj-41", "attrui", "float", 1.5, 5, "obj-39", "attrui", "attr", "probability", 5, "obj-39", "attrui", "float", 100.0, 5, "obj-58", "attrui", "attr", "mute_prob", 5, "obj-58", "attrui", "float", 35.0, 5, "obj-57", "attrui", "attr", "feedback", 5, "obj-57", "attrui", "float", 50.0, 5, "obj-56", "attrui", "attr", "stereo_spread", 5, "obj-56", "attrui", "float", 30.0, 5, "obj-55", "attrui", "attr", "mode", 5, "obj-55", "attrui", "float", 1.0, 5, "obj-49", "attrui", "attr", "mix", 5, "obj-49", "attrui", "float", 100.0, 6, "obj-61", "number~", "list", 0.0, 0.0 ]
+                            "data": [ 5, "obj-80", "attrui", "attr", "degrade_prob", 5, "obj-80", "attrui", "float", 20.0, 5, "obj-79", "attrui", "attr", "degrade", 5, "obj-79", "attrui", "float", 61.0, 5, "obj-78", "attrui", "attr", "roll_filter", 5, "obj-78", "attrui", "float", 80.0, 5, "obj-77", "attrui", "attr", "pan_spread", 5, "obj-77", "attrui", "float", 100.0, 5, "obj-76", "attrui", "attr", "vol6", 5, "obj-76", "attrui", "float", 0.65, 5, "obj-75", "attrui", "attr", "vol5", 5, "obj-75", "attrui", "float", 0.7, 5, "obj-74", "attrui", "attr", "vol4", 5, "obj-74", "attrui", "float", 0.7, 5, "obj-73", "attrui", "attr", "vol3", 5, "obj-73", "attrui", "float", 0.8, 5, "obj-72", "attrui", "attr", "vol2", 5, "obj-72", "attrui", "float", 0.8, 5, "obj-71", "attrui", "attr", "vol1", 5, "obj-71", "attrui", "float", 1.0, 5, "obj-20", "live.menu", "float", 1.0, 5, "obj-2", "attrui", "attr", "maindelay", 5, "obj-2", "attrui", "float", 100.0, 5, "obj-12", "attrui", "attr", "div2", 5, "obj-12", "attrui", "float", 1.1, 5, "obj-31", "attrui", "attr", "div3", 5, "obj-31", "attrui", "float", 1.2, 5, "obj-32", "attrui", "attr", "div4", 5, "obj-32", "attrui", "float", 1.3, 5, "obj-43", "attrui", "attr", "div5", 5, "obj-43", "attrui", "float", 1.4, 5, "obj-41", "attrui", "attr", "div6", 5, "obj-41", "attrui", "float", 1.5, 5, "obj-39", "attrui", "attr", "probability", 5, "obj-39", "attrui", "float", 100.0, 5, "obj-58", "attrui", "attr", "mute_prob", 5, "obj-58", "attrui", "float", 35.0, 5, "obj-57", "attrui", "attr", "feedback", 5, "obj-57", "attrui", "float", 50.0, 5, "obj-56", "attrui", "attr", "stereo_spread", 5, "obj-56", "attrui", "float", 30.0, 5, "obj-55", "attrui", "attr", "mode", 5, "obj-55", "attrui", "float", 1.0, 5, "obj-49", "attrui", "attr", "mix", 5, "obj-49", "attrui", "float", 100.0, 6, "obj-61", "number~", "list", 0.0, 0.0 ]
                         },
                         {
                             "number": 3,
-                            "data": [ 5, "obj-80", "attrui", "attr", "degrade_prob", 5, "obj-80", "attrui", "float", 80.0, 5, "obj-79", "attrui", "attr", "degrade", 5, "obj-79", "attrui", "float", 60.0, 5, "obj-78", "attrui", "attr", "roll_filter", 5, "obj-78", "attrui", "float", 20.0, 5, "obj-77", "attrui", "attr", "pan_spread", 5, "obj-77", "attrui", "float", 100.0, 5, "obj-76", "attrui", "attr", "vol6", 5, "obj-76", "attrui", "float", 1.0, 5, "obj-75", "attrui", "attr", "vol5", 5, "obj-75", "attrui", "float", 1.0, 5, "obj-74", "attrui", "attr", "vol4", 5, "obj-74", "attrui", "float", 1.0, 5, "obj-73", "attrui", "attr", "vol3", 5, "obj-73", "attrui", "float", 1.0, 5, "obj-72", "attrui", "attr", "vol2", 5, "obj-72", "attrui", "float", 1.0, 5, "obj-71", "attrui", "attr", "vol1", 5, "obj-71", "attrui", "float", 1.0, 5, "obj-10", "toggle", "int", 1, 5, "obj-20", "live.menu", "float", 1.0, 5, "obj-2", "attrui", "attr", "maindelay", 5, "obj-2", "attrui", "float", 30.0, 5, "obj-12", "attrui", "attr", "div2", 5, "obj-12", "attrui", "float", 1.1, 5, "obj-31", "attrui", "attr", "div3", 5, "obj-31", "attrui", "float", 1.2, 5, "obj-32", "attrui", "attr", "div4", 5, "obj-32", "attrui", "float", 1.3, 5, "obj-43", "attrui", "attr", "div5", 5, "obj-43", "attrui", "float", 1.4, 5, "obj-41", "attrui", "attr", "div6", 5, "obj-41", "attrui", "float", 1.5, 5, "obj-39", "attrui", "attr", "probability", 5, "obj-39", "attrui", "float", 100.0, 5, "obj-58", "attrui", "attr", "mute_prob", 5, "obj-58", "attrui", "float", 30.0, 5, "obj-57", "attrui", "attr", "feedback", 5, "obj-57", "attrui", "float", 0.0, 5, "obj-56", "attrui", "attr", "stereo_spread", 5, "obj-56", "attrui", "float", 100.0, 5, "obj-55", "attrui", "attr", "mode", 5, "obj-55", "attrui", "float", 1.0, 5, "obj-49", "attrui", "attr", "mix", 5, "obj-49", "attrui", "float", 100.0, 6, "obj-61", "number~", "list", 0.0, 0.0 ]
+                            "data": [ 5, "obj-80", "attrui", "attr", "degrade_prob", 5, "obj-80", "attrui", "float", 80.0, 5, "obj-79", "attrui", "attr", "degrade", 5, "obj-79", "attrui", "float", 60.0, 5, "obj-78", "attrui", "attr", "roll_filter", 5, "obj-78", "attrui", "float", 20.0, 5, "obj-77", "attrui", "attr", "pan_spread", 5, "obj-77", "attrui", "float", 100.0, 5, "obj-76", "attrui", "attr", "vol6", 5, "obj-76", "attrui", "float", 1.0, 5, "obj-75", "attrui", "attr", "vol5", 5, "obj-75", "attrui", "float", 1.0, 5, "obj-74", "attrui", "attr", "vol4", 5, "obj-74", "attrui", "float", 1.0, 5, "obj-73", "attrui", "attr", "vol3", 5, "obj-73", "attrui", "float", 1.0, 5, "obj-72", "attrui", "attr", "vol2", 5, "obj-72", "attrui", "float", 1.0, 5, "obj-71", "attrui", "attr", "vol1", 5, "obj-71", "attrui", "float", 1.0, 5, "obj-20", "live.menu", "float", 1.0, 5, "obj-2", "attrui", "attr", "maindelay", 5, "obj-2", "attrui", "float", 30.0, 5, "obj-12", "attrui", "attr", "div2", 5, "obj-12", "attrui", "float", 1.1, 5, "obj-31", "attrui", "attr", "div3", 5, "obj-31", "attrui", "float", 1.2, 5, "obj-32", "attrui", "attr", "div4", 5, "obj-32", "attrui", "float", 1.3, 5, "obj-43", "attrui", "attr", "div5", 5, "obj-43", "attrui", "float", 1.4, 5, "obj-41", "attrui", "attr", "div6", 5, "obj-41", "attrui", "float", 1.5, 5, "obj-39", "attrui", "attr", "probability", 5, "obj-39", "attrui", "float", 100.0, 5, "obj-58", "attrui", "attr", "mute_prob", 5, "obj-58", "attrui", "float", 30.0, 5, "obj-57", "attrui", "attr", "feedback", 5, "obj-57", "attrui", "float", 0.0, 5, "obj-56", "attrui", "attr", "stereo_spread", 5, "obj-56", "attrui", "float", 100.0, 5, "obj-55", "attrui", "attr", "mode", 5, "obj-55", "attrui", "float", 1.0, 5, "obj-49", "attrui", "attr", "mix", 5, "obj-49", "attrui", "float", 100.0, 6, "obj-61", "number~", "list", 0.0, 0.0 ]
                         },
                         {
                             "number": 4,
-                            "data": [ 5, "obj-80", "attrui", "attr", "degrade_prob", 5, "obj-80", "attrui", "float", 60.0, 5, "obj-79", "attrui", "attr", "degrade", 5, "obj-79", "attrui", "float", 55.0, 5, "obj-78", "attrui", "attr", "roll_filter", 5, "obj-78", "attrui", "float", 100.0, 5, "obj-77", "attrui", "attr", "pan_spread", 5, "obj-77", "attrui", "float", 100.0, 5, "obj-76", "attrui", "attr", "vol6", 5, "obj-76", "attrui", "float", 1.0, 5, "obj-75", "attrui", "attr", "vol5", 5, "obj-75", "attrui", "float", 1.0, 5, "obj-74", "attrui", "attr", "vol4", 5, "obj-74", "attrui", "float", 1.0, 5, "obj-73", "attrui", "attr", "vol3", 5, "obj-73", "attrui", "float", 1.0, 5, "obj-72", "attrui", "attr", "vol2", 5, "obj-72", "attrui", "float", 1.0, 5, "obj-71", "attrui", "attr", "vol1", 5, "obj-71", "attrui", "float", 1.0, 5, "obj-10", "toggle", "int", 1, 5, "obj-20", "live.menu", "float", 1.0, 5, "obj-2", "attrui", "attr", "maindelay", 5, "obj-2", "attrui", "float", 85.0, 5, "obj-12", "attrui", "attr", "div2", 5, "obj-12", "attrui", "float", 1.1, 5, "obj-31", "attrui", "attr", "div3", 5, "obj-31", "attrui", "float", 1.2, 5, "obj-32", "attrui", "attr", "div4", 5, "obj-32", "attrui", "float", 1.3, 5, "obj-43", "attrui", "attr", "div5", 5, "obj-43", "attrui", "float", 1.4, 5, "obj-41", "attrui", "attr", "div6", 5, "obj-41", "attrui", "float", 1.5, 5, "obj-39", "attrui", "attr", "probability", 5, "obj-39", "attrui", "float", 100.0, 5, "obj-58", "attrui", "attr", "mute_prob", 5, "obj-58", "attrui", "float", 65.0, 5, "obj-57", "attrui", "attr", "feedback", 5, "obj-57", "attrui", "float", 0.0, 5, "obj-56", "attrui", "attr", "stereo_spread", 5, "obj-56", "attrui", "float", 100.0, 5, "obj-55", "attrui", "attr", "mode", 5, "obj-55", "attrui", "float", 1.0, 5, "obj-49", "attrui", "attr", "mix", 5, "obj-49", "attrui", "float", 70.0, 6, "obj-61", "number~", "list", 0.0, 0.0 ]
+                            "data": [ 5, "obj-80", "attrui", "attr", "degrade_prob", 5, "obj-80", "attrui", "float", 60.0, 5, "obj-79", "attrui", "attr", "degrade", 5, "obj-79", "attrui", "float", 55.0, 5, "obj-78", "attrui", "attr", "roll_filter", 5, "obj-78", "attrui", "float", 100.0, 5, "obj-77", "attrui", "attr", "pan_spread", 5, "obj-77", "attrui", "float", 100.0, 5, "obj-76", "attrui", "attr", "vol6", 5, "obj-76", "attrui", "float", 1.0, 5, "obj-75", "attrui", "attr", "vol5", 5, "obj-75", "attrui", "float", 1.0, 5, "obj-74", "attrui", "attr", "vol4", 5, "obj-74", "attrui", "float", 1.0, 5, "obj-73", "attrui", "attr", "vol3", 5, "obj-73", "attrui", "float", 1.0, 5, "obj-72", "attrui", "attr", "vol2", 5, "obj-72", "attrui", "float", 1.0, 5, "obj-71", "attrui", "attr", "vol1", 5, "obj-71", "attrui", "float", 1.0, 5, "obj-20", "live.menu", "float", 1.0, 5, "obj-2", "attrui", "attr", "maindelay", 5, "obj-2", "attrui", "float", 85.0, 5, "obj-12", "attrui", "attr", "div2", 5, "obj-12", "attrui", "float", 1.1, 5, "obj-31", "attrui", "attr", "div3", 5, "obj-31", "attrui", "float", 1.2, 5, "obj-32", "attrui", "attr", "div4", 5, "obj-32", "attrui", "float", 1.3, 5, "obj-43", "attrui", "attr", "div5", 5, "obj-43", "attrui", "float", 1.4, 5, "obj-41", "attrui", "attr", "div6", 5, "obj-41", "attrui", "float", 1.5, 5, "obj-39", "attrui", "attr", "probability", 5, "obj-39", "attrui", "float", 100.0, 5, "obj-58", "attrui", "attr", "mute_prob", 5, "obj-58", "attrui", "float", 65.0, 5, "obj-57", "attrui", "attr", "feedback", 5, "obj-57", "attrui", "float", 0.0, 5, "obj-56", "attrui", "attr", "stereo_spread", 5, "obj-56", "attrui", "float", 100.0, 5, "obj-55", "attrui", "attr", "mode", 5, "obj-55", "attrui", "float", 1.0, 5, "obj-49", "attrui", "attr", "mix", 5, "obj-49", "attrui", "float", 70.0, 6, "obj-61", "number~", "list", 0.0, 0.0 ]
                         }
                     ]
                 }
@@ -78,11 +89,11 @@
                     "fontname": "Arial",
                     "fontsize": 16.0,
                     "id": "obj-62",
-                    "linecount": 7,
+                    "linecount": 6,
                     "maxclass": "comment",
                     "numinlets": 1,
                     "numoutlets": 0,
-                    "patching_rect": [ 24.0, 72.0, 472.0, 132.0 ],
+                    "patching_rect": [ 24.0, 72.0, 669.0, 114.0 ],
                     "text": "Dynamic stutter, glitch repeater, etc\nDivides a fundamental delay period (maindelay) into 5 integer or fractional subdivisions. On every cycle wrap of the fundamental clock, a stochastic Bernoulli trial selects between the normal delay tap, one of the rapid drill subdivisions, or momentary silence/dropout (mute_prob). Cubic Hermite interpolation and anti-click slew filters ensure smooth, click-free glitch transitions."
                 }
             },
@@ -359,17 +370,6 @@
             },
             {
                 "box": {
-                    "id": "obj-10",
-                    "maxclass": "toggle",
-                    "numinlets": 1,
-                    "numoutlets": 1,
-                    "outlettype": [ "int" ],
-                    "parameter_enable": 0,
-                    "patching_rect": [ 21.0, 724.0, 24.0, 24.0 ]
-                }
-            },
-            {
-                "box": {
                     "id": "obj-8",
                     "maxclass": "newobj",
                     "numinlets": 2,
@@ -567,12 +567,6 @@
         "lines": [
             {
                 "patchline": {
-                    "destination": [ "obj-8", 0 ],
-                    "source": [ "obj-10", 0 ]
-                }
-            },
-            {
-                "patchline": {
                     "destination": [ "obj-40", 0 ],
                     "hidden": 1,
                     "source": [ "obj-12", 0 ]
@@ -605,6 +599,14 @@
                     "destination": [ "obj-6", 0 ],
                     "hidden": 1,
                     "order": 1,
+                    "source": [ "obj-3", 2 ]
+                }
+            },
+            {
+                "patchline": {
+                    "destination": [ "obj-9", 0 ],
+                    "hidden": 1,
+                    "order": 2,
                     "source": [ "obj-3", 2 ]
                 }
             },
@@ -802,6 +804,12 @@
                     "destination": [ "obj-40", 0 ],
                     "hidden": 1,
                     "source": [ "obj-80", 0 ]
+                }
+            },
+            {
+                "patchline": {
+                    "destination": [ "obj-8", 0 ],
+                    "source": [ "obj-9", 0 ]
                 }
             }
         ],

@@ -78,7 +78,6 @@
             {
                 "box": {
                     "attr": "p_gain_wet_db",
-                    "bgcolor": [ 0.125, 0.125, 0.125, 1.0 ],
                     "id": "obj-12",
                     "maxclass": "attrui",
                     "numinlets": 1,
@@ -135,7 +134,6 @@
             {
                 "box": {
                     "attr": "p_damp_hz",
-                    "bgcolor": [ 0.125, 0.125, 0.125, 1.0 ],
                     "id": "obj-20",
                     "maxclass": "attrui",
                     "numinlets": 1,
@@ -149,7 +147,6 @@
             {
                 "box": {
                     "attr": "p_mod_ms",
-                    "bgcolor": [ 0.125, 0.125, 0.125, 1.0 ],
                     "id": "obj-19",
                     "maxclass": "attrui",
                     "numinlets": 1,
@@ -163,7 +160,6 @@
             {
                 "box": {
                     "attr": "p_fuzz_db",
-                    "bgcolor": [ 0.125, 0.125, 0.125, 1.0 ],
                     "id": "obj-18",
                     "maxclass": "attrui",
                     "numinlets": 1,
@@ -177,7 +173,6 @@
             {
                 "box": {
                     "attr": "p_fuzz_hz",
-                    "bgcolor": [ 0.125, 0.125, 0.125, 1.0 ],
                     "id": "obj-16",
                     "maxclass": "attrui",
                     "numinlets": 1,
@@ -793,7 +788,6 @@
             {
                 "box": {
                     "attr": "p_size",
-                    "bgcolor": [ 0.125, 0.125, 0.125, 1.0 ],
                     "id": "obj-11",
                     "maxclass": "attrui",
                     "numinlets": 1,
@@ -807,7 +801,6 @@
             {
                 "box": {
                     "attr": "p_pump_db",
-                    "bgcolor": [ 0.125, 0.125, 0.125, 1.0 ],
                     "id": "obj-10",
                     "maxclass": "attrui",
                     "numinlets": 1,
@@ -821,7 +814,6 @@
             {
                 "box": {
                     "attr": "p_release_ms",
-                    "bgcolor": [ 0.125, 0.125, 0.125, 1.0 ],
                     "id": "obj-9",
                     "maxclass": "attrui",
                     "numinlets": 1,
@@ -835,7 +827,6 @@
             {
                 "box": {
                     "attr": "p_mod_hz",
-                    "bgcolor": [ 0.125, 0.125, 0.125, 1.0 ],
                     "id": "obj-8",
                     "maxclass": "attrui",
                     "numinlets": 1,
@@ -849,7 +840,6 @@
             {
                 "box": {
                     "attr": "p_decay_pct",
-                    "bgcolor": [ 0.125, 0.125, 0.125, 1.0 ],
                     "id": "obj-4",
                     "maxclass": "attrui",
                     "numinlets": 1,
@@ -863,7 +853,6 @@
             {
                 "box": {
                     "attr": "p_mix_pct",
-                    "bgcolor": [ 0.125, 0.125, 0.125, 1.0 ],
                     "id": "obj-7",
                     "maxclass": "attrui",
                     "numinlets": 1,
@@ -896,7 +885,7 @@
                     "relative": 1,
                     "saved_attribute_attributes": {
                         "valueof": {
-                            "parameter_initial": [ -14 ],
+                            "parameter_initial": [ -70.0 ],
                             "parameter_initial_enable": 1,
                             "parameter_longname": "live.gain~",
                             "parameter_mmax": 6.0,

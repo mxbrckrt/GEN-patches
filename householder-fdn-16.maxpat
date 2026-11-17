@@ -161,6 +161,8 @@
                     "patching_rect": [ 20.0, 379.0, 48.0, 136.0 ],
                     "saved_attribute_attributes": {
                         "valueof": {
+                            "parameter_initial": [ -70.0 ],
+                            "parameter_initial_enable": 1,
                             "parameter_longname": "live.gain~",
                             "parameter_mmax": 6.0,
                             "parameter_mmin": -70.0,

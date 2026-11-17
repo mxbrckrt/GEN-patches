@@ -2718,7 +2718,7 @@
                     "maxclass": "ezdac~",
                     "numinlets": 2,
                     "numoutlets": 0,
-                    "patching_rect": [ 210.0, 716.0, 70.10308885574341, 70.10308885574341 ],
+                    "patching_rect": [ 227.4484555721283, 717.0, 70.10308885574341, 70.10308885574341 ],
                     "prototypename": "helpfile",
                     "varname": "autohelp_dac"
                 }
