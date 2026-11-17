@@ -16,25 +16,52 @@
                 "box": {
                     "fontface": 1,
                     "fontname": "Lato",
+                    "fontsize": 12.0,
+                    "id": "obj-7",
+                    "maxclass": "comment",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [ 44.0, 412.0, 53.0, 21.0 ],
+                    "text": "Audio in"
+                }
+            },
+            {
+                "box": {
+                    "fontface": 1,
+                    "fontname": "Lato",
+                    "fontsize": 12.0,
+                    "id": "obj-4",
+                    "maxclass": "comment",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [ 158.5, 412.0, 58.0, 21.0 ],
+                    "text": "Exciter in"
+                }
+            },
+            {
+                "box": {
+                    "fontface": 0,
+                    "fontname": "Arial",
                     "fontsize": 30.0,
                     "id": "obj-5",
                     "maxclass": "comment",
                     "numinlets": 1,
                     "numoutlets": 0,
-                    "patching_rect": [ 32.0, 15.0, 333.0, 42.0 ],
+                    "patching_rect": [ 32.0, 15.0, 342.0, 40.0 ],
                     "text": "Rings (Modal Resonator)"
                 }
             },
             {
                 "box": {
-                    "fontname": "Lato",
+                    "fontface": 0,
+                    "fontname": "Arial",
                     "fontsize": 13.0,
                     "id": "obj-15",
                     "linecount": 2,
                     "maxclass": "comment",
                     "numinlets": 1,
                     "numoutlets": 0,
-                    "patching_rect": [ 32.0, 58.0, 542.0, 38.0 ],
+                    "patching_rect": [ 32.0, 58.0, 559.0, 36.0 ],
                     "text": "Physical modeling modal resonator based on Mutable Instruments Rings (24 modes ZDF SVF).\nVibrating strings, bars, chimes & plates with internal strum exciter and stereo spatialization."
                 }
             },
@@ -102,14 +129,14 @@
             },
             {
                 "box": {
-                    "fontface": 1,
-                    "fontname": "Lato",
+                    "fontface": 0,
+                    "fontname": "Arial",
                     "fontsize": 12.0,
                     "id": "obj-100",
                     "maxclass": "comment",
                     "numinlets": 1,
                     "numoutlets": 0,
-                    "patching_rect": [ 280.0, 395.0, 122.0, 21.0 ],
+                    "patching_rect": [ 280.0, 395.0, 121.0, 20.0 ],
                     "text": "── Strum Exciter ──"
                 }
             },
@@ -148,13 +175,14 @@
             },
             {
                 "box": {
-                    "fontname": "Lato",
+                    "fontface": 0,
+                    "fontname": "Arial",
                     "fontsize": 11.0,
                     "id": "obj-104",
                     "maxclass": "comment",
                     "numinlets": 1,
                     "numoutlets": 0,
-                    "patching_rect": [ 310.0, 420.0, 75.0, 20.0 ],
+                    "patching_rect": [ 310.0, 420.0, 75.0, 19.0 ],
                     "text": "Auto Pluck"
                 }
             },
@@ -165,7 +193,7 @@
                     "numinlets": 3,
                     "numoutlets": 4,
                     "outlettype": [ "signal", "signal", "signal", "signal" ],
-                    "patching_rect": [ 32.0, 435.0, 185.0, 23.0 ],
+                    "patching_rect": [ 32.0, 435.0, 124.5, 23.0 ],
                     "text": "gen~ @gen rings",
                     "varname": "rings_gen"
                 }
@@ -182,7 +210,7 @@
                     "patching_rect": [ 32.0, 475.0, 48.0, 136.0 ],
                     "saved_attribute_attributes": {
                         "valueof": {
-                            "parameter_initial": [ 0.0 ],
+                            "parameter_initial": [ -70.0 ],
                             "parameter_initial_enable": 1,
                             "parameter_longname": "live.gain~",
                             "parameter_mmax": 6.0,
@@ -238,14 +266,14 @@
             },
             {
                 "box": {
-                    "fontface": 1,
-                    "fontname": "Lato",
+                    "fontface": 0,
+                    "fontname": "Arial",
                     "fontsize": 12.0,
                     "id": "obj-101",
                     "maxclass": "comment",
                     "numinlets": 1,
                     "numoutlets": 0,
-                    "patching_rect": [ 280.0, 120.0, 210.0, 21.0 ],
+                    "patching_rect": [ 280.0, 120.0, 208.0, 20.0 ],
                     "text": "── Modal Structure & Tuning ──"
                 }
             },
@@ -311,27 +339,28 @@
             },
             {
                 "box": {
-                    "fontname": "Lato",
+                    "fontface": 0,
+                    "fontname": "Arial",
                     "fontsize": 11.0,
                     "id": "obj-105",
                     "linecount": 4,
                     "maxclass": "comment",
                     "numinlets": 1,
                     "numoutlets": 0,
-                    "patching_rect": [ 280.0, 325.0, 210.0, 59.0 ],
+                    "patching_rect": [ 280.0, 325.0, 206.0, 56.0 ],
                     "text": "Structure Map:\n• < 0.25 : Subharmonic / Wood\n• = 0.25 : Ideal Harmonic String\n• 0.3..0.85 : Bar / Chime / Bell / Drum"
                 }
             },
             {
                 "box": {
-                    "fontface": 1,
-                    "fontname": "Lato",
+                    "fontface": 0,
+                    "fontname": "Arial",
                     "fontsize": 12.0,
                     "id": "obj-102",
                     "maxclass": "comment",
                     "numinlets": 1,
                     "numoutlets": 0,
-                    "patching_rect": [ 515.0, 120.0, 210.0, 21.0 ],
+                    "patching_rect": [ 515.0, 120.0, 209.0, 20.0 ],
                     "text": "── Exciter & Spatialization ──"
                 }
             },
