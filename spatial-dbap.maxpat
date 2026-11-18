@@ -473,7 +473,7 @@
                         219.0,
                         22.0
                     ],
-                    "text": "buffer~ spk_pos @samps 32 @chans 3"
+                    "text": "buffer~ spk_pos 10 3"
                 }
             },
             {

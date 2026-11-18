@@ -112,8 +112,8 @@ function read(filename) {
     
     // Update Max buffer~ spk_pos
     var b = new Buffer(bufferName);
-    if (b && b.isopen) {
-        // Poke up to 32 speaker channels (1-indexed channels in Max Buffer API)
+    if (b && b.framecount() > 0) {
+        // Poke up to 32 speaker channels (channel 1: X, channel 2: Y, channel 3: Z)
         for (var i = 0; i < 32; i++) {
             if (i < count) {
                 b.poke(1, i, speakers[i].x);
@@ -125,8 +125,10 @@ function read(filename) {
                 b.poke(3, i, 0.0);
             }
         }
+        b.send(); // Notify Max & gen~ that buffer has been modified
+        post("[dbap_csv_loader] Written " + count + " speaker positions to buffer~ '" + bufferName + "'\n");
     } else {
-        post("[dbap_csv_loader] Warning: buffer~ '" + bufferName + "' not found.\n");
+        post("[dbap_csv_loader] Warning: buffer~ '" + bufferName + "' not found or has 0 frames.\n");
     }
     
     // Outlet 0: Notify gen~ with num_speakers
