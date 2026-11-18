@@ -76,6 +76,7 @@ GEN-patches/
 │   ├── pulsar-synth.gendsp
 │   ├── rings.gendsp
 │   ├── sature-delay.gendsp
+│   ├── spatial-dbap.gendsp
 │   ├── tape-hysteresis.gendsp
 │   ├── ufo.gendsp
 │   ├── ufo-core.gendsp             # Core variant with RNBO-flat rampsmooth codebox
@@ -109,6 +110,7 @@ GEN-patches/
 ├── pulsar-synth.maxpat             # Curtis Roads Pulsar Microsound Synthesizer
 ├── rings.maxpat                    # Mutable Instruments Rings 24-Mode Modal Resonator
 ├── sature-delay.maxpat             # Lo-Fi Character Delay with Tilt EQ & Diffusion
+├── spatial-dbap.maxpat             # 3D Distance-Based Amplitude Panning & KNN Dynamic Spatializer
 ├── tape-hysteresis.maxpat          # Jiles-Atherton Magnetic Hysteresis Waveshaper
 ├── ufo.maxpat                      # Multi-Waveform LFO & Rampsmooth Slew Limiter
 ├── volt-drama.maxpat               # Dual-Stage Distortion, Moog Ladder & Delay
@@ -151,6 +153,7 @@ GEN-patches/
 | **Pulsar Synth** | Granular | [`pulsar-synth.gendsp`](gendsp/pulsar-synth.gendsp) | [`pulsar-synth.maxpat`](pulsar-synth.maxpat) | 2 In / 2 Out | Curtis Roads pulsar synthesis: fundamental rate $f_0$, pulsaret formant $f_f$, duty ratio $d/T$ |
 | **Rings** | Physical | [`rings.gendsp`](gendsp/rings.gendsp) | [`rings.maxpat`](rings.maxpat) | 3 In / 4 Out | Mutable Instruments Rings 24-mode ZDF SVF modal resonator + material structure & pluck exciter |
 | **Sature Delay** | Delays | [`sature-delay.gendsp`](gendsp/sature-delay.gendsp) | [`sature-delay.maxpat`](sature-delay.maxpat) | 2 In / 2 Out | Fractional tape delay + dual degradation (bitcrush vs tape sag) + tilt EQ + allpass diffusion |
+| **Spatial DBAP** | Spatial & Reverbs | [`spatial-dbap.gendsp`](gendsp/spatial-dbap.gendsp) | [`spatial-dbap.maxpat`](spatial-dbap.maxpat) | 4 In / 32 Out | 3D Distance-Based Amplitude Panning (DBAP) + dynamic KNN focus + buffer~ coordinate loading |
 | **Tape Hysteresis** | Distortion | [`tape-hysteresis.gendsp`](gendsp/tape-hysteresis.gendsp) | [`tape-hysteresis.maxpat`](tape-hysteresis.maxpat) | 2 In / 2 Out | Discrete Jiles-Atherton differential magnetic domain formulation evaluating $\frac{dM}{dH}$ |
 | **UFO Multi-LFO** | Modulation | [`ufo.gendsp`](gendsp/ufo.gendsp) | [`ufo.maxpat`](ufo.maxpat) | 2 In / 1 Out | Multi-waveform oscillator + exponential curvature shaping + GenExpr rampsmooth slew limiter |
 | **Volt Drama** | Distortion | [`volt-drama.gendsp`](gendsp/volt-drama.gendsp) | [`volt-drama.maxpat`](volt-drama.maxpat) | 2 In / 2 Out | Polynomial/Tarrabia dual waveshaper + 4-pole Moog ladder + 4-voice unison + recursive delay |

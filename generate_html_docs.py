@@ -18,6 +18,55 @@ os.makedirs(DOCS_DIR, exist_ok=True)
 # 25 Active DSP models synchronized with normalized .maxpat and gendsp/*.gendsp files
 MODELS = [
     {
+        "id": "spatial-dbap",
+        "name": "Spatial DBAP",
+        "title": "3D Distance-Based Amplitude Panning & KNN Spatializer",
+        "category": "reverbs",
+        "category_label": "Spatial & Reverbs",
+        "badge": "3D DBAP / 32-Ch Spatializer",
+        "gendsp": "gendsp/spatial-dbap.gendsp",
+        "maxpat": "spatial-dbap.maxpat",
+        "description": "Continuous, sample-accurate 3D Distance-Based Amplitude Panning (DBAP) engine with dynamic K-Nearest Neighbors (KNN) focus tapering. Conserves acoustic energy across arbitrary 2D/3D speaker configurations (from 6-channel studio rings up to 28-channel domes like Grame-CNCM) loaded dynamically from CSV files. Reads 3D speaker coordinates from a shared buffer~ table without re-compilation and outputs 32 discrete spatialized audio streams.",
+        "dsp_paradigm": "Equal-power 3D DBAP (w_i = d_i^-alpha) + K-Nearest Neighbors focus tapering + external buffer~ dynamic coordinate reading",
+        "inlets": [
+            "in1: Mono audio source",
+            "in2: Source X coordinate (-1..1 normalized / meters)",
+            "in3: Source Y coordinate (-1..1 normalized / meters)",
+            "in4: Source Z coordinate (-1..1 normalized / meters)"
+        ],
+        "outlets": [
+            "out1 .. out32: Discrete spatialized audio streams for up to 32 speaker channels"
+        ],
+        "block_diagram": """[in2..4: X, Y, Z] ──> [Room Scale] ──> (x_s, y_s, z_s)
+                                      │
+[buffer~ spk_pos] ──> [Read Spk (x_i, y_i, z_i)] ◄── [Param num_speakers (1..32)]
+                                      │
+                                      ▼
+                        [3D Euclidean Distance Engine]
+                        d_i = sqrt((x_s - x_i)^2 + (y_s - y_i)^2 + (z_s - z_i)^2 + blur^2)
+                                      │
+                                      ▼
+                        [DBAP Weight & KNN Focus Taper]
+                        w_i = d_i^-rolloff * (1 - focus * rel_dist)
+                                      │
+                                      ▼
+                        [Equal Power Energy Normalization]
+                        norm = 1.0 / sqrt(sum(w_k^2))
+                        g_i = w_i * norm
+                                      │
+[in1: Audio In] ─────────────────────┬┴──────────────────────┐
+                                     ▼                       ▼
+                               [out1 = in1 * g_1] ... [out32 = in1 * g_32]""",
+        "parameters": [
+            {"name": "num_speakers", "range": "1 – 32", "default": "6", "desc": "Active speaker count (dynamically updated via CSV)"},
+            {"name": "rolloff", "range": "0.1 – 4.0", "default": "1.0", "desc": "Distance attenuation exponent (1.0 = standard free-field)"},
+            {"name": "blur", "range": "0.01 – 2.0 m", "default": "0.25", "desc": "Virtual source radius to avoid singular division by zero"},
+            {"name": "focus", "range": "0.0 – 1.0", "default": "0.0", "desc": "KNN focus tapering: 0 = diffuse DBAP, 1 = tight local speakers"},
+            {"name": "room_scale", "range": "0.1 – 20.0 m", "default": "2.0", "desc": "Radius multiplier in meters for normalized [-1, 1] inputs"}
+        ]
+    },
+
+    {
         "id": "driller",
         "name": "Driller",
         "title": "Stochastic Multi-Tap Glitch Repeat & Beat-Drill Delay",

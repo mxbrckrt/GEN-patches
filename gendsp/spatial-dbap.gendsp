@@ -1,0 +1,1070 @@
+{
+    "patcher": {
+        "fileversion": 1,
+        "appversion": {
+            "major": 9,
+            "minor": 1,
+            "revision": 5,
+            "architecture": "x64",
+            "modernui": 1
+        },
+        "classnamespace": "dsp.gen",
+        "rect": [
+            84.0,
+            100.0,
+            950.0,
+            820.0
+        ],
+        "bglocked": 0,
+        "openinpresentation": 0,
+        "default_fontsize": 12.0,
+        "default_fontface": 0,
+        "default_fontname": "Arial",
+        "gridonopen": 1,
+        "gridsize": [
+            15.0,
+            15.0
+        ],
+        "gridsnaponopen": 1,
+        "objectsnaponopen": 1,
+        "statusbarvisible": 2,
+        "toolbarvisible": 1,
+        "boxes": [
+            {
+                "box": {
+                    "id": "obj-in1",
+                    "maxclass": "newobj",
+                    "text": "in 1 @comment \"Audio Input (Mono Source)\"",
+                    "numinlets": 0,
+                    "numoutlets": 1,
+                    "outlettype": [
+                        ""
+                    ],
+                    "patching_rect": [
+                        30.0,
+                        20.0,
+                        180.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-in2",
+                    "maxclass": "newobj",
+                    "text": "in 2 @comment \"Source X Position (-1..1 / meters)\"",
+                    "numinlets": 0,
+                    "numoutlets": 1,
+                    "outlettype": [
+                        ""
+                    ],
+                    "patching_rect": [
+                        230.0,
+                        20.0,
+                        210.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-in3",
+                    "maxclass": "newobj",
+                    "text": "in 3 @comment \"Source Y Position (-1..1 / meters)\"",
+                    "numinlets": 0,
+                    "numoutlets": 1,
+                    "outlettype": [
+                        ""
+                    ],
+                    "patching_rect": [
+                        460.0,
+                        20.0,
+                        210.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-in4",
+                    "maxclass": "newobj",
+                    "text": "in 4 @comment \"Source Z Position (-1..1 / meters)\"",
+                    "numinlets": 0,
+                    "numoutlets": 1,
+                    "outlettype": [
+                        ""
+                    ],
+                    "patching_rect": [
+                        690.0,
+                        20.0,
+                        210.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-codebox",
+                    "maxclass": "codebox",
+                    "code": "/**\n * ============================================================================\n * @file spatial-dbap.gendsp / spatial-dbap.maxpat\n * @title DISTANCE-BASED AMPLITUDE PANNING (3D DBAP & KNN Spatializer)\n * @author Max Bruckert (assisted by Gemini)\n *\n * @description\n * High-performance, sample-accurate 3D Distance-Based Amplitude Panning (DBAP)\n * with dynamic K-Nearest Neighbors (KNN) focus tapering.\n * Reads arbitrary 3D speaker coordinates from an external 3-channel buffer~\n * 'spk_pos' (Ch1: X, Ch2: Y, Ch3: Z) loaded from CSV files (e.g. maxBstudio 6ch,\n * gramestudio 28ch dome).\n * Conserves acoustic power across arbitrary 2D/3D layouts without triangulation\n * artifacts or sweet-spot constraints.\n *\n * @inlets\n *   in1 : Audio Signal (Mono Source)\n *   in2 : Source X Position (-1..1 normalized or metric)\n *   in3 : Source Y Position (-1..1 normalized or metric)\n *   in4 : Source Z Position (-1..1 normalized or metric)\n *\n * @outlets\n *   out 1 .. out 32 : Spatialized audio streams for up to 32 speakers\n * ============================================================================\n */\n\nBuffer spk_pos;\n\n// Parameters\nParam num_speakers(6, min=1, max=32);      // Active speaker count (from CSV layout)\nParam rolloff(1.0, min=0.1, max=4.0);     // Distance attenuation exponent (1.0 = standard acoustic)\nParam blur(0.25, min=0.01, max=2.0);      // Source virtual radius / anti-singularity (meters)\nParam focus(0.0, min=0.0, max=1.0);       // KNN focus tapering (0 = diffuse DBAP, 1 = tight KNN)\nParam room_scale(2.0, min=0.1, max=20.0); // Room radius scale multiplier in meters\n\n// Internal computation buffers\nData dists(32);\nData weights(32);\nData gains(32);\n\n// Fallback coordinates for 6 hexagon speakers if buffer~ is empty\nData fb_x( 0.0,  1.732,  1.732,  0.0, -1.732, -1.732);\nData fb_y( 2.0,  1.0,   -1.0,   -2.0, -1.0,    1.0  );\nData fb_z( 0.6,  0.6,    0.6,    0.6,  0.6,    0.6  );\n\n// Source coordinates in meters\nsrc_x = in2 * room_scale;\nsrc_y = in3 * room_scale;\nsrc_z = in4 * room_scale;\n\nn_spk = clamp(floor(num_speakers), 1, 32);\nhas_buf = (dim(spk_pos) >= n_spk);\n\n// Pass 1: Compute Euclidean distances and find min/max\nmin_d = 10000.0;\nmax_d = 0.0001;\n\nfor (i = 0; i < n_spk; i += 1) {\n    spk_x = has_buf ? peek(spk_pos, i, 0) : ((i < 6) ? peek(fb_x, i) : 0.0);\n    spk_y = has_buf ? peek(spk_pos, i, 1) : ((i < 6) ? peek(fb_y, i) : 0.0);\n    spk_z = has_buf ? peek(spk_pos, i, 2) : ((i < 6) ? peek(fb_z, i) : 0.0);\n    \n    dx = src_x - spk_x;\n    dy = src_y - spk_y;\n    dz = src_z - spk_z;\n    d = sqrt(dx*dx + dy*dy + dz*dz + blur*blur);\n    \n    poke(dists, d, i);\n    min_d = min(min_d, d);\n    max_d = max(max_d, d);\n}\n\n// Pass 2: Compute weights and sum of energy\nspan = max(max_d - min_d, 0.0001);\nenergy = 0.0;\n\nfor (i = 0; i < n_spk; i += 1) {\n    d = peek(dists, i);\n    w = pow(d, -rolloff);\n    \n    // KNN / focus tapering\n    if (focus > 0.0) {\n        rel_d = (d - min_d) / span;\n        taper = clamp(1.0 - (focus * rel_d * 1.5), 0.0, 1.0);\n        w = w * taper;\n    }\n    \n    poke(weights, w, i);\n    energy += w * w;\n}\n\n// Pass 3: Normalize gains (Equal Power, sum g^2 = 1.0) and multiply audio\nnorm_factor = 1.0 / sqrt(max(energy, 1e-12));\naudio_in = in1;\n\nfor (i = 0; i < 32; i += 1) {\n    if (i < n_spk) {\n        g = peek(weights, i) * norm_factor;\n        poke(gains, audio_in * g, i);\n    } else {\n        poke(gains, 0.0, i);\n    }\n}\n\n// Direct outputs for up to 32 speakers\nout1  = peek(gains, 0);   out2  = peek(gains, 1);   out3  = peek(gains, 2);   out4  = peek(gains, 3);\nout5  = peek(gains, 4);   out6  = peek(gains, 5);   out7  = peek(gains, 6);   out8  = peek(gains, 7);\nout9  = peek(gains, 8);   out10 = peek(gains, 9);   out11 = peek(gains, 10);  out12 = peek(gains, 11);\nout13 = peek(gains, 12);  out14 = peek(gains, 13);  out15 = peek(gains, 14);  out16 = peek(gains, 15);\nout17 = peek(gains, 16);  out18 = peek(gains, 17);  out19 = peek(gains, 18);  out20 = peek(gains, 19);\nout21 = peek(gains, 20);  out22 = peek(gains, 21);  out23 = peek(gains, 22);  out24 = peek(gains, 23);\nout25 = peek(gains, 24);  out26 = peek(gains, 25);  out27 = peek(gains, 26);  out28 = peek(gains, 27);\nout29 = peek(gains, 28);  out30 = peek(gains, 29);  out31 = peek(gains, 30);  out32 = peek(gains, 31);\n",
+                    "numinlets": 4,
+                    "numoutlets": 32,
+                    "outlettype": [
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        ""
+                    ],
+                    "patching_rect": [
+                        30.0,
+                        60.0,
+                        870.0,
+                        600.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out1",
+                    "maxclass": "newobj",
+                    "text": "out 1 @comment \"Speaker 1 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        30.0,
+                        680.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out2",
+                    "maxclass": "newobj",
+                    "text": "out 2 @comment \"Speaker 2 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        140.0,
+                        680.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out3",
+                    "maxclass": "newobj",
+                    "text": "out 3 @comment \"Speaker 3 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        250.0,
+                        680.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out4",
+                    "maxclass": "newobj",
+                    "text": "out 4 @comment \"Speaker 4 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        360.0,
+                        680.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out5",
+                    "maxclass": "newobj",
+                    "text": "out 5 @comment \"Speaker 5 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        470.0,
+                        680.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out6",
+                    "maxclass": "newobj",
+                    "text": "out 6 @comment \"Speaker 6 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        580.0,
+                        680.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out7",
+                    "maxclass": "newobj",
+                    "text": "out 7 @comment \"Speaker 7 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        690.0,
+                        680.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out8",
+                    "maxclass": "newobj",
+                    "text": "out 8 @comment \"Speaker 8 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        800.0,
+                        680.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out9",
+                    "maxclass": "newobj",
+                    "text": "out 9 @comment \"Speaker 9 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        30.0,
+                        710.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out10",
+                    "maxclass": "newobj",
+                    "text": "out 10 @comment \"Speaker 10 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        140.0,
+                        710.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out11",
+                    "maxclass": "newobj",
+                    "text": "out 11 @comment \"Speaker 11 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        250.0,
+                        710.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out12",
+                    "maxclass": "newobj",
+                    "text": "out 12 @comment \"Speaker 12 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        360.0,
+                        710.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out13",
+                    "maxclass": "newobj",
+                    "text": "out 13 @comment \"Speaker 13 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        470.0,
+                        710.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out14",
+                    "maxclass": "newobj",
+                    "text": "out 14 @comment \"Speaker 14 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        580.0,
+                        710.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out15",
+                    "maxclass": "newobj",
+                    "text": "out 15 @comment \"Speaker 15 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        690.0,
+                        710.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out16",
+                    "maxclass": "newobj",
+                    "text": "out 16 @comment \"Speaker 16 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        800.0,
+                        710.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out17",
+                    "maxclass": "newobj",
+                    "text": "out 17 @comment \"Speaker 17 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        30.0,
+                        740.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out18",
+                    "maxclass": "newobj",
+                    "text": "out 18 @comment \"Speaker 18 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        140.0,
+                        740.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out19",
+                    "maxclass": "newobj",
+                    "text": "out 19 @comment \"Speaker 19 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        250.0,
+                        740.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out20",
+                    "maxclass": "newobj",
+                    "text": "out 20 @comment \"Speaker 20 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        360.0,
+                        740.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out21",
+                    "maxclass": "newobj",
+                    "text": "out 21 @comment \"Speaker 21 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        470.0,
+                        740.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out22",
+                    "maxclass": "newobj",
+                    "text": "out 22 @comment \"Speaker 22 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        580.0,
+                        740.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out23",
+                    "maxclass": "newobj",
+                    "text": "out 23 @comment \"Speaker 23 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        690.0,
+                        740.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out24",
+                    "maxclass": "newobj",
+                    "text": "out 24 @comment \"Speaker 24 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        800.0,
+                        740.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out25",
+                    "maxclass": "newobj",
+                    "text": "out 25 @comment \"Speaker 25 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        30.0,
+                        770.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out26",
+                    "maxclass": "newobj",
+                    "text": "out 26 @comment \"Speaker 26 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        140.0,
+                        770.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out27",
+                    "maxclass": "newobj",
+                    "text": "out 27 @comment \"Speaker 27 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        250.0,
+                        770.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out28",
+                    "maxclass": "newobj",
+                    "text": "out 28 @comment \"Speaker 28 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        360.0,
+                        770.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out29",
+                    "maxclass": "newobj",
+                    "text": "out 29 @comment \"Speaker 29 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        470.0,
+                        770.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out30",
+                    "maxclass": "newobj",
+                    "text": "out 30 @comment \"Speaker 30 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        580.0,
+                        770.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out31",
+                    "maxclass": "newobj",
+                    "text": "out 31 @comment \"Speaker 31 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        690.0,
+                        770.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            },
+            {
+                "box": {
+                    "id": "obj-out32",
+                    "maxclass": "newobj",
+                    "text": "out 32 @comment \"Speaker 32 Output\"",
+                    "numinlets": 1,
+                    "numoutlets": 0,
+                    "patching_rect": [
+                        800.0,
+                        770.0,
+                        100.0,
+                        22.0
+                    ]
+                }
+            }
+        ],
+        "lines": [
+            {
+                "patchline": {
+                    "source": [
+                        "obj-in1",
+                        0
+                    ],
+                    "destination": [
+                        "obj-codebox",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-in2",
+                        0
+                    ],
+                    "destination": [
+                        "obj-codebox",
+                        1
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-in3",
+                        0
+                    ],
+                    "destination": [
+                        "obj-codebox",
+                        2
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-in4",
+                        0
+                    ],
+                    "destination": [
+                        "obj-codebox",
+                        3
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        0
+                    ],
+                    "destination": [
+                        "obj-out1",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        1
+                    ],
+                    "destination": [
+                        "obj-out2",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        2
+                    ],
+                    "destination": [
+                        "obj-out3",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        3
+                    ],
+                    "destination": [
+                        "obj-out4",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        4
+                    ],
+                    "destination": [
+                        "obj-out5",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        5
+                    ],
+                    "destination": [
+                        "obj-out6",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        6
+                    ],
+                    "destination": [
+                        "obj-out7",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        7
+                    ],
+                    "destination": [
+                        "obj-out8",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        8
+                    ],
+                    "destination": [
+                        "obj-out9",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        9
+                    ],
+                    "destination": [
+                        "obj-out10",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        10
+                    ],
+                    "destination": [
+                        "obj-out11",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        11
+                    ],
+                    "destination": [
+                        "obj-out12",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        12
+                    ],
+                    "destination": [
+                        "obj-out13",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        13
+                    ],
+                    "destination": [
+                        "obj-out14",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        14
+                    ],
+                    "destination": [
+                        "obj-out15",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        15
+                    ],
+                    "destination": [
+                        "obj-out16",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        16
+                    ],
+                    "destination": [
+                        "obj-out17",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        17
+                    ],
+                    "destination": [
+                        "obj-out18",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        18
+                    ],
+                    "destination": [
+                        "obj-out19",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        19
+                    ],
+                    "destination": [
+                        "obj-out20",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        20
+                    ],
+                    "destination": [
+                        "obj-out21",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        21
+                    ],
+                    "destination": [
+                        "obj-out22",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        22
+                    ],
+                    "destination": [
+                        "obj-out23",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        23
+                    ],
+                    "destination": [
+                        "obj-out24",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        24
+                    ],
+                    "destination": [
+                        "obj-out25",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        25
+                    ],
+                    "destination": [
+                        "obj-out26",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        26
+                    ],
+                    "destination": [
+                        "obj-out27",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        27
+                    ],
+                    "destination": [
+                        "obj-out28",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        28
+                    ],
+                    "destination": [
+                        "obj-out29",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        29
+                    ],
+                    "destination": [
+                        "obj-out30",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        30
+                    ],
+                    "destination": [
+                        "obj-out31",
+                        0
+                    ]
+                }
+            },
+            {
+                "patchline": {
+                    "source": [
+                        "obj-codebox",
+                        31
+                    ],
+                    "destination": [
+                        "obj-out32",
+                        0
+                    ]
+                }
+            }
+        ]
+    }
+}
