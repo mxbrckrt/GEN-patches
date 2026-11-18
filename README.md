@@ -38,18 +38,29 @@ open docs/index.html
 
 ---
 
+## 🤖 AI & LLM Developer Guidelines
+
+For autonomous AI agents, LLMs, or future contributors extending or debugging this codebase, see:
+- 📖 **[`AGENTS.md`](AGENTS.md):** Complete guide to GenExpr lexical scoping rules, `[mc.gen~]` single-outlet multichannel evaluation, ADM $Z_{\text{ear}}=0.0$ coordinate conventions, Node for Max argument handling, and project organization.
+
+---
+
 ## 📁 Repository Structure
 
 ```text
 GEN-patches/
 ├── .gitignore                      # Ignores Max caches, audio binaries, and testing-and-redundancies/
 ├── README.md                       # Library overview & algorithmic index
+├── AGENTS.md                       # AI / LLM development guidelines & GenExpr gotchas
 ├── generate_html_docs.py           # Generator for the scientific HTML reference
 ├── docs/
 │   └── index.html                  # Alphabetical scientific documentation catalog
 ├── soundfiles/                     # Audio test samples for patchers
 │   └── tabla-solo.wav              # Demo percussion loop for driller.maxpat
-├── gendsp/                         # 29 standalone modular .gendsp definitions (25 models + 4 utilities/cores)
+├── code/                           # Max JavaScript utilities
+│   └── dbap_csv_loader.js          # Dynamic CSV layout parser with ADM ear-level Z=0 centering
+├── gendsp/                         # Standalone modular .gendsp definitions
+│   ├── adm_panner.gendsp           # Multichannel ADM Panner with beam shaping & air damping
 │   ├── aether-drift.gendsp
 │   ├── aether-particle.gendsp
 │   ├── bernoulli-gate.gendsp
@@ -58,6 +69,7 @@ GEN-patches/
 │   ├── delays-delays.gendsp
 │   ├── driller.gendsp
 │   ├── erbeverb-clone.gendsp
+│   ├── fdn_multireverb.gendsp      # Multichannel FDN Reverb with Hadamard diffusion
 │   ├── fhickup.gendsp
 │   ├── multiband-drive.gendsp
 │   ├── modeldrive.gendsp
@@ -76,7 +88,7 @@ GEN-patches/
 │   ├── pulsar-synth.gendsp
 │   ├── rings.gendsp
 │   ├── sature-delay.gendsp
-│   ├── spatial-dbap.gendsp
+│   ├── spatial-dbap.gendsp         # Multichannel 3D DBAP & KNN Spatializer with air damping
 │   ├── tape-hysteresis.gendsp
 │   ├── ufo.gendsp
 │   ├── ufo-core.gendsp             # Core variant with RNBO-flat rampsmooth codebox
@@ -125,8 +137,9 @@ GEN-patches/
 
 ## 🎛️ Algorithmic Index (Alphabetical Order)
 
-| Model Name | Domain | Standalone Gendsp | Demo Patcher | In / Out | Core Algorithmic Architecture |
+| **Model Name** | Domain | Standalone Gendsp | Demo Patcher | In / Out | Core Algorithmic Architecture |
 | :--- | :--- | :--- | :--- | :--- | :--- |
+| **ADM Multichannel Panner** | Spatial & Reverbs | [`adm_panner.gendsp`](gendsp/adm_panner.gendsp) | — | 3 In / 1 MC Out | High-contrast circular ADM ring & linear panner + cosine beam aperture + ISO 9613-1 air damping |
 | **Aether Drift** | Spatial & Reverbs | [`aether-drift.gendsp`](gendsp/aether-drift.gendsp) | [`aether-drift.maxpat`](aether-drift.maxpat) | 2 In / 2 Out | Schroeder-Moorer parallel delay + 8-stage allpass series with sine modulation |
 | **Aether Particle** | Granular | [`aether-particle.gendsp`](gendsp/aether-particle.gendsp) | [`aether-particle.maxpat`](aether-particle.maxpat) | 2 In / 2 Out | 4-voice asynchronous granular sampler + 20s ring buffer + unitary 4x4 Hadamard FDN |
 | **Bernoulli Gate** | Stochastic | [`bernoulli-gate.gendsp`](gendsp/bernoulli-gate.gendsp) | [`bernoulli-gate.maxpat`](bernoulli-gate.maxpat) | 1 In / 3 Out | Phasor/zero-crossing detector + Bernoulli trial decision router + latched binary state |
@@ -135,6 +148,7 @@ GEN-patches/
 | **Delays Delays** | Delays | [`delays-delays.gendsp`](gendsp/delays-delays.gendsp) | [`delays-delays.maxpat`](delays-delays.maxpat) | 2 In / 20 Out | 32-tap delay line + 16 spatial taps + ladder spectral filter + sidechain ducking |
 | **Driller** | Delays | [`driller.gendsp`](gendsp/driller.gendsp) | [`driller.maxpat`](driller.maxpat) | 4 In / 3 Out | Dynamic stutter, glitch repeater, continuous circular buffer & beat subdivision lottery |
 | **Erbeverb Clone** | Spatial & Reverbs | [`erbeverb-clone.gendsp`](gendsp/erbeverb-clone.gendsp) | [`erbeverb-clone.maxpat`](erbeverb-clone.maxpat) | 2 In / 2 Out | Unitary 4x4 Hadamard feedback matrix + prime delay lengths + tanh soft limiting |
+| **FDN Multichannel Reverb** | Spatial & Reverbs | [`fdn_multireverb.gendsp`](gendsp/fdn_multireverb.gendsp) | — | 1 In / 1 MC Out | Multichannel 4x4 unitary Hadamard FDN + golden-ratio detuning + circular LFO chorus + smoothed mix |
 | **Fhickup** | Distortion | [`fhickup.gendsp`](gendsp/fhickup.gendsp) | [`fhickup.maxpat`](fhickup.maxpat) | 4 In / 2 Out | Overdrive with loudness comp + stochastic amplitude chopper + morphing telephone SVF |
 | **Multiband Drive** | Distortion | [`multiband-drive.gendsp`](gendsp/multiband-drive.gendsp) | [`multiband-drive.maxpat`](multiband-drive.maxpat) | 2 In / 5 Out | 3-band LR4 crossover (24dB/oct) + 3 independent morphing distortion cores & notch gain |
 | **Model Drive** | Distortion | [`modeldrive.gendsp`](gendsp/modeldrive.gendsp) | [`modeldrive.maxpat`](modeldrive.maxpat) | 3 In / 2 Out | 4-model distortion (Tanh, Wavefolder, Quantizer, Modulo Wrap) + loudness normalization & morphing |
@@ -153,7 +167,7 @@ GEN-patches/
 | **Pulsar Synth** | Granular | [`pulsar-synth.gendsp`](gendsp/pulsar-synth.gendsp) | [`pulsar-synth.maxpat`](pulsar-synth.maxpat) | 2 In / 2 Out | Curtis Roads pulsar synthesis: fundamental rate $f_0$, pulsaret formant $f_f$, duty ratio $d/T$ |
 | **Rings** | Physical | [`rings.gendsp`](gendsp/rings.gendsp) | [`rings.maxpat`](rings.maxpat) | 3 In / 4 Out | Mutable Instruments Rings 24-mode ZDF SVF modal resonator + material structure & pluck exciter |
 | **Sature Delay** | Delays | [`sature-delay.gendsp`](gendsp/sature-delay.gendsp) | [`sature-delay.maxpat`](sature-delay.maxpat) | 2 In / 2 Out | Fractional tape delay + dual degradation (bitcrush vs tape sag) + tilt EQ + allpass diffusion |
-| **Spatial DBAP** | Spatial & Reverbs | [`spatial-dbap.gendsp`](gendsp/spatial-dbap.gendsp) | [`spatial-dbap.maxpat`](spatial-dbap.maxpat) | 4 In / 32 Out | 3D Distance-Based Amplitude Panning (DBAP) + dynamic KNN focus + buffer~ coordinate loading |
+| **Spatial DBAP** | Spatial & Reverbs | [`spatial-dbap.gendsp`](gendsp/spatial-dbap.gendsp) | [`spatial-dbap.maxpat`](spatial-dbap.maxpat) | 4 In / 1 MC Out | Multichannel 3D DBAP + dynamic KNN focus + ISO 9613-1 air damping + mc.gen~ per-channel evaluation |
 | **Tape Hysteresis** | Distortion | [`tape-hysteresis.gendsp`](gendsp/tape-hysteresis.gendsp) | [`tape-hysteresis.maxpat`](tape-hysteresis.maxpat) | 2 In / 2 Out | Discrete Jiles-Atherton differential magnetic domain formulation evaluating $\frac{dM}{dH}$ |
 | **UFO Multi-LFO** | Modulation | [`ufo.gendsp`](gendsp/ufo.gendsp) | [`ufo.maxpat`](ufo.maxpat) | 2 In / 1 Out | Multi-waveform oscillator + exponential curvature shaping + GenExpr rampsmooth slew limiter |
 | **Volt Drama** | Distortion | [`volt-drama.gendsp`](gendsp/volt-drama.gendsp) | [`volt-drama.maxpat`](volt-drama.maxpat) | 2 In / 2 Out | Polynomial/Tarrabia dual waveshaper + 4-pole Moog ladder + 4-voice unison + recursive delay |

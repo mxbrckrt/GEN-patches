@@ -23,46 +23,144 @@ MODELS = [
         "title": "3D Distance-Based Amplitude Panning & KNN Spatializer",
         "category": "reverbs",
         "category_label": "Spatial & Reverbs",
-        "badge": "3D DBAP / 32-Ch Spatializer",
+        "badge": "3D DBAP / Multichannel mc.gen~",
         "gendsp": "gendsp/spatial-dbap.gendsp",
         "maxpat": "spatial-dbap.maxpat",
-        "description": "Continuous, sample-accurate 3D Distance-Based Amplitude Panning (DBAP) engine with dynamic K-Nearest Neighbors (KNN) focus tapering. Conserves acoustic energy across arbitrary 2D/3D speaker configurations (from 6-channel studio rings up to 28-channel domes like Grame-CNCM) loaded dynamically from CSV files. Reads 3D speaker coordinates from a shared buffer~ table without re-compilation and outputs 32 discrete spatialized audio streams.",
-        "dsp_paradigm": "Equal-power 3D DBAP (w_i = d_i^-alpha) + K-Nearest Neighbors focus tapering + external buffer~ dynamic coordinate reading",
+        "description": "Continuous, sample-accurate 3D Distance-Based Amplitude Panning (DBAP) engine with dynamic K-Nearest Neighbors (KNN) focus tapering, ISO 9613-1 air absorption damping, aperture width shaping, and coordinate slewing. Tailored for Max/MSP multichannel [mc.gen~]. Evaluated per speaker channel (mc_channel), reading arbitrary 3D speaker coordinates from an external 3-channel buffer~ 'spk_pos' loaded dynamically via dbap_csv_loader.js (centered on ear level Z=0, ADM convention). Conserves acoustic energy across arbitrary 2D/3D layouts (studio rings to domes).",
+        "dsp_paradigm": "Equal-power 3D DBAP (w_i = d_i^-alpha) + KNN focus tapering + ISO 9613-1 air damping + mc.gen~ per-channel evaluation",
         "inlets": [
             "in1: Mono audio source",
             "in2: Source X coordinate (-1..1 normalized / meters)",
             "in3: Source Y coordinate (-1..1 normalized / meters)",
-            "in4: Source Z coordinate (-1..1 normalized / meters)"
+            "in4: Source Z coordinate (-1..1 normalized, 0 = ear level)"
         ],
         "outlets": [
-            "out1 .. out32: Discrete spatialized audio streams for up to 32 speaker channels"
+            "out1: Spatialized audio stream for current MC channel (mc_channel)"
         ],
-        "block_diagram": """[in2..4: X, Y, Z] ──> [Room Scale] ──> (x_s, y_s, z_s)
-                                      │
-[buffer~ spk_pos] ──> [Read Spk (x_i, y_i, z_i)] ◄── [Param num_speakers (1..32)]
-                                      │
-                                      ▼
-                        [3D Euclidean Distance Engine]
-                        d_i = sqrt((x_s - x_i)^2 + (y_s - y_i)^2 + (z_s - z_i)^2 + blur^2)
-                                      │
-                                      ▼
-                        [DBAP Weight & KNN Focus Taper]
-                        w_i = d_i^-rolloff * (1 - focus * rel_dist)
-                                      │
-                                      ▼
-                        [Equal Power Energy Normalization]
-                        norm = 1.0 / sqrt(sum(w_k^2))
-                        g_i = w_i * norm
-                                      │
-[in1: Audio In] ─────────────────────┬┴──────────────────────┐
-                                     ▼                       ▼
-                               [out1 = in1 * g_1] ... [out32 = in1 * g_32]""",
+        "block_diagram": """[in2..4: X, Y, Z] ──> [Slide Slew] ──> [Room Scale] ──> (src_x, src_y, src_z)
+                                                                 │
+[buffer~ spk_pos] ──> [Read Spk (sx, sy, sz)] ◄── [Param num_speakers (0=auto)]
+                                                                 │
+                                                                 ▼
+                                                [3D Euclidean Distance Engine]
+                                                d_k = sqrt(dx^2 + dy^2 + dz^2 + (blur*width)^2)
+                                                                 │
+                                                                 ▼
+                                                [DBAP Weight & KNN Focus Taper]
+                                                w_k = d_k^-(rolloff * sharpness) * taper_k
+                                                                 │
+                                                                 ▼
+                                                [Equal Power Energy Normalization]
+                                                norm = 1.0 / sqrt(sum(w^2))
+                                                gain = w_my_channel * norm
+                                                                 │
+[in1: Audio In] ───────────────────► [in1 * gain] ───────────────┴───────────────┐
+                                                                                 ▼
+                                                                     [Air Absorption 1-Pole LP]
+                                                                                 │
+                                                                                 ▼
+                                                                     [out1: MC Channel Output]""",
         "parameters": [
-            {"name": "num_speakers", "range": "1 – 32", "default": "6", "desc": "Active speaker count (dynamically updated via CSV)"},
-            {"name": "rolloff", "range": "0.1 – 4.0", "default": "1.0", "desc": "Distance attenuation exponent (1.0 = standard free-field)"},
+            {"name": "num_speakers", "range": "0 – 32", "default": "0", "desc": "Active speaker count (0 = auto-detected from mc_channelcount)"},
+            {"name": "rolloff", "range": "0.1 – 4.0", "default": "1.0", "desc": "Distance attenuation exponent (1.0 = standard inverse distance)"},
             {"name": "blur", "range": "0.01 – 2.0 m", "default": "0.25", "desc": "Virtual source radius to avoid singular division by zero"},
             {"name": "focus", "range": "0.0 – 1.0", "default": "0.0", "desc": "KNN focus tapering: 0 = diffuse DBAP, 1 = tight local speakers"},
-            {"name": "room_scale", "range": "0.1 – 20.0 m", "default": "2.0", "desc": "Radius multiplier in meters for normalized [-1, 1] inputs"}
+            {"name": "room_scale", "range": "0.1 – 20.0 m", "default": "2.0", "desc": "Metric radius multiplier for normalized [-1, 1] inputs"},
+            {"name": "smooth", "range": "1 – 48000 samps", "default": "240", "desc": "Coordinate slewing time in samples (~5 ms at 48 kHz)"},
+            {"name": "width", "range": "1 – 200 %", "default": "100.0", "desc": "Aperture beam width (20% = laser pin-point, 200% = wide)"},
+            {"name": "sharpness", "range": "0.5 – 4.0", "default": "1.0", "desc": "Focal sharpness exponent (1.0 = gentle, 2.5 = crisp, 4.0 = razor)"},
+            {"name": "air_damp", "range": "0.0 – 1.0", "default": "0.0", "desc": "High-frequency air absorption damping (ISO 9613-1 approximation)"}
+        ]
+    },
+    {
+        "id": "adm-panner",
+        "name": "ADM Multichannel Panner",
+        "title": "High-Contrast Multichannel ADM Panner with Air Absorption",
+        "category": "reverbs",
+        "category_label": "Spatial & Reverbs",
+        "badge": "ADM Panner / Multichannel mc.gen~",
+        "gendsp": "gendsp/adm_panner.gendsp",
+        "maxpat": "",
+        "description": "High-contrast multichannel panner engineered for circular ADM loudspeaker rings and linear arrays. Evaluated per speaker channel (mc_channel). Features responsive coordinate slewing, cosine aperture beam shaping (width, sharpness), radial contrast attenuation, and ISO 9613-1 acoustic atmospheric air damping.",
+        "dsp_paradigm": "Cosine aperture beam shaping + polar ADM ring mapping + ISO 9613-1 atmospheric damping",
+        "inlets": [
+            "in1: Audio input signal (mono voice signal)",
+            "in2: Coord X (-1.0 to 1.0) in Mode 0 | Linear Position (-1.0 to 1.0) in Mode 1",
+            "in3: Coord Y (-1.0 to 1.0) in Mode 0 | Unused in Mode 1"
+        ],
+        "outlets": [
+            "out1: Spatialized audio stream for current MC channel (mc_channel)"
+        ],
+        "block_diagram": """[in2: X, in3: Y] ──> [Slide Slew] ──> [CartoPol / Linear] ──> (r, theta)
+                                                                 │
+                                                                 ▼
+                                                [Cosine Beam Aperture Engine]
+                                                ang_dist = shortest_circular_dist(theta, spk_theta)
+                                                gain = pow(cos(ang_dist / beam * PI/2), sharpness)
+                                                                 │
+                                                                 ▼
+                                                [Radial Contrast Modulation]
+                                                gain_spatial = gain * (r * 0.7 + 0.3)
+                                                                 │
+[in1: Audio In] ───────────────────► [in1 * gain_spatial] ───────┴───────────────┐
+                                                                                 ▼
+                                                                     [Air Absorption 1-Pole LP]
+                                                                                 │
+                                                                                 ▼
+                                                                     [out1: MC Channel Output]""",
+        "parameters": [
+            {"name": "mode", "range": "0 – 1", "default": "0", "desc": "0 = Cartesian ADM X/Y circular ring, 1 = Linear Panning"},
+            {"name": "width", "range": "1 – 200 %", "default": "100.0", "desc": "Angular aperture beam width (100% = normal, 20% = pin-point)"},
+            {"name": "sharpness", "range": "1.0 – 8.0", "default": "2.5", "desc": "Beam slope exponent (1.0 = gentle cos, 2.5 = crisp, 4.0 = razor)"},
+            {"name": "air_damp", "range": "0.0 – 1.0", "default": "0.65", "desc": "High-frequency air absorption intensity (0 = off, 1 = deep)"},
+            {"name": "smooth", "range": "1 – 48000 samps", "default": "240", "desc": "Coordinate slewing time in samples (~5 ms at 48 kHz)"}
+        ]
+    },
+    {
+        "id": "fdn-multireverb",
+        "name": "FDN Multichannel Reverb",
+        "title": "Multichannel Spatial Feedback Delay Network (FDN) Reverberator",
+        "category": "reverbs",
+        "category_label": "Spatial & Reverbs",
+        "badge": "Multichannel FDN Reverb",
+        "gendsp": "gendsp/fdn_multireverb.gendsp",
+        "maxpat": "",
+        "description": "Immersive Feedback Delay Network (FDN) reverberator engineered specifically for multichannel diffusion and spatial acoustics (mc.gen~). Combines prime-interval delay lines with incommensurate golden-ratio inter-channel detuning, rotating multiphase circular LFO modulation, 4-phase cyclic orthogonal Hadamard output tapping, internal non-linear tanh() soft-clipping saturation, spectral tilt EQ, and click-free smoothed mix balance.",
+        "dsp_paradigm": "Unitary Hadamard 4x4 FDN + golden-ratio inter-channel detuning + multiphase circular LFO + tanh() soft saturation",
+        "inlets": [
+            "in1: Multichannel Audio Input (mc.gen~ stream or distributed mono source)"
+        ],
+        "outlets": [
+            "out1: Multichannel Reverberant Audio Output"
+        ],
+        "block_diagram": """[in1: Audio In] ──> [Pre-delay] ──> [All-Pass Diffusion Cascade] ──> diff_in
+                                                                             │
+                    ┌─────────────────── [Unitary Hadamard Matrix 4x4] ◄─────┤
+                    │                                    │                   │
+                    ▼                                    ▼                   ▼
+             [Delay Lines d1..d4]               [tanh() Saturation]    [mix(j, h, damp)]
+             (Golden-Ratio Detuned)                      │
+                    │                                    ▼
+                    └───────────────────────────> [Cyclic Orthogonal Tap]
+                                                         │
+                                                         ▼
+                                                [Per-Voice Spectral Tilt EQ]
+                                                         │
+                                                         ▼
+                                                [Smoothed Dry/Wet Mix (slide)]
+                                                         │
+                                                         ▼
+                                                [out1: MC Reverb Output]""",
+        "parameters": [
+            {"name": "size", "range": "0.5 – 100", "default": "90", "desc": "Perceived room geometry and prime delay scale"},
+            {"name": "decay", "range": "0 – 110", "default": "82", "desc": "Reverb decay time (100 = infinite feedback threshold)"},
+            {"name": "spread", "range": "0 – 100", "default": "90", "desc": "Inter-channel spatial decorrelation & multiphase depth"},
+            {"name": "absorb", "range": "0 – 100", "default": "10", "desc": "High-frequency absorption (damping one-pole lowpass)"},
+            {"name": "tilt", "range": "-1.0 – 1.0", "default": "-0.1", "desc": "Spectral tilt balance (-1 = dark, +1 = bright)"},
+            {"name": "predelay", "range": "0 – 100 ms", "default": "10", "desc": "Initial acoustic pre-delay in milliseconds"},
+            {"name": "speed", "range": "0.1 – 10 Hz", "default": "1.0", "desc": "Circular multiphase LFO modulation frequency"},
+            {"name": "depth", "range": "0 – 20", "default": "5.0", "desc": "LFO modulation intensity / spatial chorus depth"},
+            {"name": "mix_rev", "range": "0 – 100 %", "default": "25", "desc": "Dry/Wet mix balance with 5ms slide smoothing"}
         ]
     },
 
