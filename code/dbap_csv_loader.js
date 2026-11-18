@@ -15,18 +15,57 @@ outlets = 3; // 0: gen~ params, 1: UI info/names, 2: WebSocket bridge OSC
 
 var bufferName = "spk_pos";
 
+function findFile(filename) {
+    if (!filename) return null;
+    
+    // Strategy 1: Direct file open
+    var f = new File(filename, "read");
+    if (f && f.isopen) return f;
+    
+    // Extract bare filename (strip any path prefixes)
+    var bareName = filename;
+    var lastSlash = Math.max(filename.lastIndexOf("/"), filename.lastIndexOf("\"));
+    if (lastSlash !== -1) {
+        bareName = filename.substring(lastSlash + 1);
+        f = new File(bareName, "read");
+        if (f && f.isopen) return f;
+    }
+    
+    // Strategy 2: Resolve relative to patcher directory
+    if (this.patcher && this.patcher.filepath) {
+        var pPath = this.patcher.filepath;
+        var pSlash = Math.max(pPath.lastIndexOf("/"), pPath.lastIndexOf("\"));
+        if (pSlash !== -1) {
+            var pDir = pPath.substring(0, pSlash + 1);
+            
+            // Try pDir + filename
+            f = new File(pDir + filename, "read");
+            if (f && f.isopen) return f;
+            
+            // Try pDir + "layouts/" + bareName
+            f = new File(pDir + "layouts/" + bareName, "read");
+            if (f && f.isopen) return f;
+            
+            // Try pDir + bareName
+            f = new File(pDir + bareName, "read");
+            if (f && f.isopen) return f;
+        }
+    }
+    
+    // Strategy 3: Try "layouts/" + bareName
+    f = new File("layouts/" + bareName, "read");
+    if (f && f.isopen) return f;
+    
+    return null;
+}
+
 function read(filename) {
     if (!filename) return;
     
-    var f = new File(filename, "read");
-    if (!f.isopen) {
-        // Try searching in layouts/ directory
-        var altPath = "layouts/" + filename;
-        f = new File(altPath, "read");
-        if (!f.isopen) {
-            post("[dbap_csv_loader] Error: cannot open file: " + filename + "\n");
-            return;
-        }
+    var f = findFile(filename);
+    if (!f || !f.isopen) {
+        post("[dbap_csv_loader] Error: cannot find or open file: " + filename + "\n");
+        return;
     }
     
     var speakers = [];
@@ -67,14 +106,14 @@ function read(filename) {
     
     var count = speakers.length;
     if (count === 0) {
-        post("[dbap_csv_loader] Warning: no valid speaker coordinates found.\n");
+        post("[dbap_csv_loader] Warning: no valid speaker coordinates parsed.\n");
         return;
     }
     
     // Update Max buffer~ spk_pos
     var b = new Buffer(bufferName);
     if (b && b.isopen) {
-        // Poke up to 32 speaker channels
+        // Poke up to 32 speaker channels (1-indexed channels in Max Buffer API)
         for (var i = 0; i < 32; i++) {
             if (i < count) {
                 b.poke(1, i, speakers[i].x);
@@ -107,15 +146,25 @@ function read(filename) {
     }
     outlet(2, "/spk/done", count);
     
-    post("[dbap_csv_loader] Loaded " + count + " speakers from: " + filename + "\n");
+    post("[dbap_csv_loader] Successfully loaded " + count + " speakers from: " + filename + "\n");
 }
 
 function preset(name) {
     if (name === "maxBstudio") {
-        read("layouts/maxBstudio-speaker-setup.csv");
+        read("maxBstudio-speaker-setup.csv");
     } else if (name === "gramestudio") {
-        read("layouts/gramestudio-speaker-setup.csv");
+        read("gramestudio-speaker-setup.csv");
     } else {
         read(name);
+    }
+}
+
+// Support drag and drop file path message
+function anything() {
+    var args = arrayfromargs(arguments);
+    if (messagename === "read") {
+        read(args[0]);
+    } else {
+        read(messagename);
     }
 }
