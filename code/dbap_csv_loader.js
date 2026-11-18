@@ -24,7 +24,7 @@ function findFile(filename) {
     
     // Extract bare filename (strip any path prefixes)
     var bareName = filename;
-    var lastSlash = Math.max(filename.lastIndexOf("/"), filename.lastIndexOf("\"));
+    var lastSlash = filename.lastIndexOf("/");
     if (lastSlash !== -1) {
         bareName = filename.substring(lastSlash + 1);
         f = new File(bareName, "read");
@@ -34,7 +34,7 @@ function findFile(filename) {
     // Strategy 2: Resolve relative to patcher directory
     if (this.patcher && this.patcher.filepath) {
         var pPath = this.patcher.filepath;
-        var pSlash = Math.max(pPath.lastIndexOf("/"), pPath.lastIndexOf("\"));
+        var pSlash = pPath.lastIndexOf("/");
         if (pSlash !== -1) {
             var pDir = pPath.substring(0, pSlash + 1);
             
